@@ -21,19 +21,20 @@ io.on('connection', function (socket) {
   //
   // Allow the client to join a specified room
   //
+
+  socket.on('chat message', function(msg){
+    io.emit('chat message', msg);
+  });
+
   socket.on('join', function (roomName) {
-
     socket.join(roomName);
-
   });
 
   //
   // Allow the client to leave a specified room
   //
   socket.on('leave', function (roomName) {
-
     socket.leave(roomName);
-
   });
 
   //
@@ -41,12 +42,10 @@ io.on('connection', function (socket) {
   // they have already joined
   //
   socket.on('send', function (data) {
-
     socket.to(data.room).emit('message', {
       message: data.message,
       timestamp: Date.now()
     });
-
   });
 
 });
