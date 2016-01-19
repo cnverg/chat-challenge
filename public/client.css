@@ -122,3 +122,7 @@ div#message-info {
     padding: 50px 0 40px 0;
 }
 
+#chat-info{
+    display:none;
+}
+

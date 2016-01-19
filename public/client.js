@@ -42,12 +42,11 @@ socket.on('connect', function () {
 
 // This function randomly generate color for individual user
 function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
+    var color = ["#0B03CB", "#211A70", "#731C79", "#0C043D", "#FE0832", "#540872", "#3C060A", "#00573E", "#19AE01", "#19B124",
+                 "#D50078", "#AE2C1B", "#A174A0", "#FA1854", "#1A14F9", "#9D2342",	"#4E4B3F", "#C27451",
+                  "#1C93FD", "#000000", "#0000FF", "#A52A2A", "#DC143C", "#00008B"];
+
+    return color[Math.floor(Math.random() * color.length)];
 }
 
 // This function is called as soon as form get submitted
