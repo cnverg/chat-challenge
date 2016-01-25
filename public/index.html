@@ -1,50 +1,191 @@
 <!doctype html>
-<html>
-  <head>
+<html ng-app="chatChallenge">
+    <head>
 
-    <script src="/socket.io/socket.io.js"></script>
-
-    <script>
-
-      var socket = io();
-
-      //
-      // Handle an incoming message
-      //
-      socket.on('message', function (data) {
-        console.log(data);
-      });
-
-      //
-      // Join a room
-      //
-      function join(room) {
-        socket.emit('join', room);
-      }
-
-      //
-      // Leave a room
-      //
-      function leave(room) {
-        socket.emit('leave', room);
-      }
-
-      //
-      // Send a message
-      //
-      function send(room, message) {
-        socket.emit('send', {
-          room: room,
-          message: message
-        });
-      }
-
-    </script>
-
-  </head>
-  <body>
-    <button onclick="join('test')">Join</button>
+        <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+        <!--<script src="../node_modules/socket.io/node_modules/socket.io-client/socket.io.js"></script>-->
+        <script src="scripts/angular.js"></script>
+        <link href="styles/bootstrap.css" rel="stylesheet" />
+        <link href="styles/bootstrap-theme.css" rel="stylesheet" />
+        <link href="styles/styles.css" rel="stylesheet" />
+        <script type="text/javascript">
+            angular.module('chatChallenge', []);
+            var app = angular.module('chatChallenge');
+        </script>
+        <script src="Controllers/chatChallenge.js"></script>
+        <script src="scripts/main.js"></script>
+        <script src="Services/services.js"></script>
+    </head>
+<body ng-controller="chatChallengeCtrl">
+    <!--<button onclick="join('test')">Join</button>
     <button onclick="leave('test')">Leave</button>
-    <button onclick="send('test', 'hello')">Send</button>
-  </body>
+    <button ng-click="send('test', 'hello')">Send</button>-->
+    <div class="container-fluid">
+        <div class="row">
+            <header class="col-lg-12"></header>
+            <div id="colUsers" class="col-lg-2 col-sm-2 col-md-2 col-xs-4">
+                <!--<div class="container">
+                    <h4>Rooms</h4>
+                    <ul ng-repeat="item in data.rooms">
+                        <li class="user">
+                            {{item}}
+                        </li>
+                    </ul>
+                </div>-->
+                <div class="container">
+                    <h4>Users</h4>
+                    <ul ng-repeat="item in data.users">
+                        <li class="user">
+                            {{item}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="colMessages" class="col-lg-10 col-sm-10 col-md-10 col-xs-8">
+                <div id="messageHeader">
+                    <span class="roomName">DevTeam</span>
+                </div>
+                <div id="messagesContainer">
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                    <div class="messageWrapper">
+                        <div class="messageHeader">
+                            <span class="username">aneguzan</span>
+                            <span class="date">13/13/11 3:14pm</span>
+                        </div>
+                        <div>
+                            El 20 voy a cobrar 3 dias mas 13, 14, 15)   .... mas las vacaciones.
+                        </div>
+                    </div>
+                </div>
+                <div id="messagesSender">
+                    <div >
+                        <div class="col-lg-1 col-sm-1 col-md-1 col-xs-2">
+                            <button class="btn btn-primary">Send</button>
+                        </div>
+                        <div class="col-lg-11 col-sm-11 col-md-11 col-xs-10">
+                            <input type="text" class="form-control"></input>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
 </html>

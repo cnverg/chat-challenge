@@ -1,0 +1,93 @@
+﻿body, html {
+
+    height: 100%;
+}
+header {
+    background: #4c9689;
+    height: 5%;
+}
+
+.row, .container-fluid {
+    height: 100% !important;
+}
+
+#colMessages, #colUsers {
+    height: 95%;
+}
+
+
+#colMessages h4, #colUsers h4{
+    color: white;
+}
+
+#colUsers {
+    background-color: #4d394b;
+    padding: 10px;
+    color:#ab9ba9;
+}     
+#colMessages {
+    background-color: white;
+}
+#messageHeader {
+    height: 7%;
+    width: 100%;
+    border-bottom: solid 1px #4d394b;
+}
+#messagesContainer {
+    height: 85%;
+    width: 100%;
+}
+#messagesSender {
+    height: 8%;
+    width: 100%;
+}
+
+#messagesSender button{
+    width: 100%;
+}
+#messagesSender div{
+    padding: 5px;
+}
+
+#messagesContainer .messageWrapper{
+    padding: 10px 30px;
+}
+
+#messagesContainer .messageWrapper:hover{
+    background-color: #f9f9f9;
+}
+
+#messagesContainer div.messageHeader span.username{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#messagesContainer div.messageHeader span.date{
+    color: #9e9ea6;
+    font-size: 9pt;
+    display: inline-block;
+    padding: 3px;
+}
+
+#messagesContainer {
+    overflow-y: scroll;
+    padding-top: 7px;
+}
+
+.roomName {
+    font-size: 2rem;
+    line-height: 53px;
+    display: inline-block;
+    padding: 0 .1rem 0 1.5rem;
+    cursor: pointer;
+    color: #555459;
+    font-weight: 900;
+}
+
+.user {
+    list-style-type: none;
+    cursor: pointer;
+}
+li.user:hover {
+    background-color: #3e313c;
+}
