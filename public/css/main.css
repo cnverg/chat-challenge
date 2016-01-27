@@ -1,0 +1,18 @@
+.messageBubble {
+	border: 1px solid #eee;
+	margin: 5px 0px;
+	border-radius: 5px;
+	padding: 5px;
+	box-shadow: 1px 1px 1px 0px #eee;
+}
+
+.actionBubble {
+	text-align: center;
+	padding: 2px;
+	background-color: #fdfdfd;
+	margin: 5px 0px;
+	border-radius: 100px;
+}
+.conversationPanel {
+	padding: 20px 0px;
+}
