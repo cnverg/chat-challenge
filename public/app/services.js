@@ -108,6 +108,7 @@
 				socket.emit('changeName', nickname);
 			}
 		}
-	)
+	);
+	
 
 })();

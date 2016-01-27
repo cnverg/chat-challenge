@@ -20,7 +20,6 @@
 			}
 			$scope.send = function(msg){
 				if(currentRoom.connected && msg){
-					console.log($scope);
 					ChatService.send(currentRoom.name, msg);
 					$scope.newMessage = '';
 				}
@@ -29,7 +28,12 @@
 				if(nickname){
 					ChatService.changeName(nickname);
 				}
+				$scope.newNickname = '';
 			}
+			$scope.$watch('currentRoom.events.length', function(){
+				var element = $('.messagesPanel');
+				$(element).animate({ scrollTop: $(element).height() }, "slow");
+			});
 
 
 		}
