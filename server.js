@@ -42,7 +42,7 @@ io.on('connection', function(socket) {
 	//
 	socket.on('join', function(roomName) {
 		socket.join(roomName);
-		socket.broadcast.emit('action', {
+		socket.to(roomName).emit('action', {
 			message: socket.session.nickname + ' has joined'
 		});
 	});
@@ -53,9 +53,11 @@ io.on('connection', function(socket) {
 	socket.on('changeName', function(nickname){
 		var oldNick = socket.session.nickname;
 		if(nickname == oldNick)return;
-		socket.broadcast.emit('action', {
-			message: oldNick + ' has renamed to ' + nickname
-		});
+		for(var room in socket.rooms){
+			socket.to(room).emit('action', {
+				message: oldNick + ' has renamed to ' + nickname
+			});
+		}
 		socket.session.nickname = nickname;
 	});
 
@@ -85,9 +87,11 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('disconnect', function(){
-		socket.broadcast.emit('action', {
-			message: socket.session.nickname + ' has left'
-		});
+		for(var room in socket.rooms){
+			socket.to(room).emit('action', {
+				message: oldNick + ' has renamed to ' + nickname
+			});
+		}
 		console.log('disconnected');
 	})
 
