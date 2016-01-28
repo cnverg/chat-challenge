@@ -1,0 +1,23 @@
+<div  class="media messageBubble eventViewer" >
+	<div class="media-left media-top">
+		<img class="media-object" src="imgs/uknown.png" 
+			 style="width: 50px; height: 50px;">
+	</div>
+	<div class="media-body">
+		<span class="pull-right timestamp">{{message.timestamp | date : 'hh:mm:ss a'}}</span>
+		<h5 class="media-heading">
+			<span ng-bind="message.user">
+			</span>
+			<i>says:</i>
+		</h5>
+		<span ng-bind="message.text"></span>
+		<div ng-if="message.attachments" class="attachments" >
+			<div class="attachment" 
+				 ng-repeat="attachment in message.attachments" 
+				 ng-switch="attachment.type">
+				 <giphy-attachment content="attachment" ng-switch-when="giphy">
+				 </giphy-attachment>
+			</div>
+		</div>
+	</div>
+</div>

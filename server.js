@@ -5,6 +5,9 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+var Promise = require('promise');
+var plugins = require('./app/plugins');
+
 
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -73,15 +76,20 @@ io.on('connection', function(socket) {
 
 	});
 
+
 	//
 	// Allow the client to send a message to any room
-	// they have already joined
+	// they have already joined, all plugins will run on this message
 	//
 	socket.on('send', function(data) {
-		socket.to(data.room).emit('message', {
-			message: data.message,
+		var msg = {// base template
+			text: data.text,
 			user: socket.session.nickname,
-			timestamp: Date.now()
+		};
+		plugins
+		.runMessagePlugins( msg , plugins.allPlugins )
+		.then(function(msg){
+			io.to(data.room).emit('message', msg);
 		});
 
 	});
@@ -96,3 +104,4 @@ io.on('connection', function(socket) {
 	})
 
 });
+

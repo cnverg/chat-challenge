@@ -25,12 +25,8 @@
 			// on message received
 			socket.on('message', function (data) {
 				$timeout(function() {		
-	        		service.room.events.push({
-	        			type     : 'message',
-	      				message  : data.message,
-	      				timestamp: data.timestamp,
-	      				user     : data.user,
-	        		});
+					data.type = 'message';
+	        		service.room.events.push(data);
 				}, 0);
       		});
 
@@ -44,11 +40,8 @@
       		// on action received
       		socket.on('action', function(data){
 				$timeout(function() {	
-	        		service.room.events.push({
-	        			type     : 'action',
-	      				message  : data.message,
-	      				timestamp: data.timestamp,
-	        		});
+					data.type = 'action';
+	        		service.room.events.push(data);
 				}, 0);
       		});
 
@@ -69,40 +62,33 @@
 					service.room.name = roomName;
 				}
 				service.room.connected = true;
-				service.room.events.push(
-					{
-						message: 'you joined ' + roomName,
-						timestamp: new Date(),
-						type: 'action'
-					}
-				);
+				service.room.events.push({
+					type: 'action',
+					text: 'you joined ' + roomName,
+					timestamp: new Date(),
+				});
 				socket.emit('join', roomName);
 			}
 			function leave(roomName){
 				service.room.connected = false;
 				service.room.events.push({
-					message: 'you leaved ' + roomName,
+					type	 : 'action' ,
+					text	 : 'you left ' + roomName,
 					timestamp: new Date(),
-					type: 'action'
 				});
 				socket.emit('leave', roomName);
 			}
-			function send(roomName, msg){
-				service.room.events.push({
-					message: msg,
-					user: service.user.nickname,
-					timestamp: new Date(),
-					type: 'message',
-				});
+			function send(roomName, text){
 				socket.emit('send', {
 					room: roomName,
-					message: msg
+					text: text
 				})
 			}
 			function changeName(nickname){
 				service.room.events.push({
-					message: 'you changed the nickname to ' + nickname,
-					type: 'action'
+					text: 'you changed the nickname to ' + nickname,
+					type: 'action',
+					timestamp: new Date(),
 				});
 				service.user.nickname = nickname;
 				socket.emit('changeName', nickname);
