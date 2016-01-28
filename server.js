@@ -56,6 +56,12 @@ io.on('connection', function(socket) {
 	socket.on('changeName', function(nickname){
 		var oldNick = socket.session.nickname;
 		if(nickname == oldNick)return;
+		socket.emit('changeName', {
+			newNickname: nickname,
+			oldNickname: oldNick,
+			text       : 'you have changed the name to ' + nickname,
+			timestamp  : new Date(),
+		})
 		for(var room in socket.rooms){
 			socket.to(room).emit('action', {
 				message: oldNick + ' has renamed to ' + nickname
@@ -82,14 +88,22 @@ io.on('connection', function(socket) {
 	// they have already joined, all plugins will run on this message
 	//
 	socket.on('send', function(data) {
-		var msg = {// base template
-			text: data.text,
-			user: socket.session.nickname,
-		};
+		var context = {
+			io    : io,
+			socket: socket,
+			data  : data,
+			msg   : {
+				text: data.text,
+				user: socket.session.nickname,
+			},
+			event : 'send',
+		}
 		plugins
-		.runMessagePlugins( msg , plugins.allPlugins )
-		.then(function(msg){
-			io.to(data.room).emit('message', msg);
+		.runPlugins( context , plugins.allPlugins )
+		.then(function(context){
+			if(context.msg){
+				io.to(data.room).emit('message', context.msg);
+			}
 		});
 
 	});

@@ -1,9 +1,14 @@
 var Promise = require('promise');
 var request = require('request');
 
-module.exports = function(msg){
-	return new Promise(function(resolve, reject){
-		var regex = / *\/giphy (.*)/;
+module.exports = function(context){
+	return new Promise(function(resolve, reject){;
+
+		var msg = context.msg;
+		if(!msg)return resolve(context);
+
+		// /giphy COMMAND
+		var regex = / *\/giphy (.+)/;
 		if(regex.test(msg.text)){
 			var giphyText = regex.exec(msg.text)[1];
 			request({
@@ -25,19 +30,17 @@ module.exports = function(msg){
 						type: 'giphy',
 						text: null
 					});
-					resolve(msg);
-
 				}else {
 					msg.attachments = msg.attachments || [];
 					msg.attachments.push({
 						type: 'giphy',
 						url : json.data[0].images.fixed_width.url
 					});
-					resolve(msg);
 				}
+				resolve(context);
 			});
 		}else{
-			resolve(msg);
+			resolve(context);
 		}
 	});
 }

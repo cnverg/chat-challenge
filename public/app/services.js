@@ -45,6 +45,15 @@
 				}, 0);
       		});
 
+      		// server changed your nickname
+      		socket.on('changeName', function(data){
+      			$timeout(function() {	
+      				service.user.nickname = data.newNickname;
+					data.type = 'action';
+	        		service.room.events.push(data);
+				}, 0);
+      		});
+
       		socket.on('disconnect', function(){
       			$timeout(function(){
       				service.room.connected = false;
@@ -85,12 +94,6 @@
 				})
 			}
 			function changeName(nickname){
-				service.room.events.push({
-					text: 'you changed the nickname to ' + nickname,
-					type: 'action',
-					timestamp: new Date(),
-				});
-				service.user.nickname = nickname;
 				socket.emit('changeName', nickname);
 			}
 		}
