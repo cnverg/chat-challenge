@@ -8,7 +8,7 @@ The ideal candidate will possess strong CSS3 and Angular skills, and familiarity
 
 * Build a basic chat interface
 * Integrate with [Giphy API](https://github.com/giphy/GiphyAPI)
-* Showing off your design skills is a BIG plus (it doesn't need to be production ready, but please don't make it look like shit)
+* Showing off your design skills is a BIG plus (it doesn't need to be production ready, but please don't make it look like shit). We are especially interested in Material Design - and Angular Material and Materialize CSS are both great things to consider.
 
 
 ### Chat Interface
