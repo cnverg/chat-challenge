@@ -31,6 +31,7 @@
 				}, 0);
       		});
 
+			// receive user data from server
       		socket.on('welcome', function(data){
       			$timeout(function() {
 					service.user.nickname = data.nickname;
@@ -57,7 +58,7 @@
 				}, 0);
       		});
 
-      		// on user enter received
+      		// on user leave received
       		socket.on('userLeave', function(data){
 				$timeout(function() {	
 					var oldUser = data.oldUser;
@@ -68,37 +69,29 @@
 				}, 0);
       		});
 
-      		// server changed your nickname
+      		// server changed nickname
       		socket.on('changeName', function(data){
       			$timeout(function() {
-      				var myId = service.user.id;
-      				var newNickname = data.newNickname;
-
-      				service.user.nickname = newNickname;
-      				if(service.room.users && service.room.users[myId])
-      					service.room.users[myId] = newNickname;
-
-					data.type = 'action';
-	        		service.room.events.push(data);
-				}, 0);
-      		});
-
-      		// server changed your nickname
-      		socket.on('userChangeName', function(data){
-      			$timeout(function() {
       				var user = data.user;
-      				if(user)
-      					service.room.users[user.id] = user.nickname;
+      				if(!user)return;
+      				var myId  	 = service.user.id;
+      				var userId	 = user.id;
+      				var nickname = user.nickname;
+      				if(myId == userId)
+      					service.user.nickname = nickname;
+      				if(service.room.users && service.room.users[userId])
+      					service.room.users[userId] = nickname;
+
 					data.type = 'action';
 	        		service.room.events.push(data);
 				}, 0);
       		});
 
-      		// server changed your nickname
+      		// receive the usersList
       		socket.on('userList', function(list){
       			$timeout(function() {
+      				// list is object { id1 : nickname1, id2 : nickname2}
       				service.room.users = list;
-      				console.log(list);
 				}, 0);
       		});
 

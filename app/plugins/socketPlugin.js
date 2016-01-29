@@ -22,24 +22,27 @@ module.exports = {
 					return;
 				}
 
-				// emit to the socket for rename
-				socket.emit('changeName', {
-					newNickname: nickname,
-					oldNickName: oldNick,
-					text       : 'you have changed the name to ' + nickname,
-					timestamp  : new Date(),
-				});
-
-				if(nickname == oldNick)return; // no error 
-
 				// update nickname in session
 				socket.session.nickname = nickname;
 
-				// build message for others in chat
+				// emit to the socket for rename
+				socket.emit('changeName', {
+					text     : 'you have changed the name to ' + nickname,
+					timestamp: new Date(),
+					user     : {
+						id		: socket.session.id,
+						nickname: socket.session.nickname
+					}
+				});
+
+				// dont bother others if change is for the same name
+				if(nickname == oldNick)return; // no error 
 
 				// send to everyone in the room
 				for(var room in socket.rooms){
-					context.socket.to(room).emit('userChangeName', {
+
+					// message to others for new nickname for the user
+					context.socket.to(room).emit('changeName', {
 						text     : oldNick + ' has renamed to ' + nickname,
 						timestamp: new Date(),
 						user     : {
