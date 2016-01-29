@@ -18,7 +18,8 @@
 				room  : {
 					events: [],
 					name: null,
-					connected: false
+					connected: false,
+					users: {}
 				}
 			}
 
@@ -45,18 +46,67 @@
 				}, 0);
       		});
 
-      		// server changed your nickname
-      		socket.on('changeName', function(data){
-      			$timeout(function() {	
-      				service.user.nickname = data.newNickname;
+      		// on user enter received
+      		socket.on('userEnter', function(data){
+				$timeout(function() {	
+					var newUser = data.newUser;
+					if(newUser)
+						service.room.users[newUser.id] = newUser.nickname;
 					data.type = 'action';
 	        		service.room.events.push(data);
 				}, 0);
       		});
 
+      		// on user enter received
+      		socket.on('userLeave', function(data){
+				$timeout(function() {	
+					var oldUser = data.oldUser;
+					if(oldUser)
+						delete service.room.users[oldUser.id];
+					data.type = 'action';
+	        		service.room.events.push(data);
+				}, 0);
+      		});
+
+      		// server changed your nickname
+      		socket.on('changeName', function(data){
+      			$timeout(function() {
+      				var myId = service.user.id;
+      				var newNickname = data.newNickname;
+
+      				service.user.nickname = newNickname;
+      				if(service.room.users && service.room.users[myId])
+      					service.room.users[myId] = newNickname;
+
+					data.type = 'action';
+	        		service.room.events.push(data);
+				}, 0);
+      		});
+
+      		// server changed your nickname
+      		socket.on('userChangeName', function(data){
+      			$timeout(function() {
+      				var user = data.user;
+      				if(user)
+      					service.room.users[user.id] = user.nickname;
+					data.type = 'action';
+	        		service.room.events.push(data);
+				}, 0);
+      		});
+
+      		// server changed your nickname
+      		socket.on('userList', function(list){
+      			$timeout(function() {
+      				service.room.users = list;
+      				console.log(list);
+				}, 0);
+      		});
+
+
       		socket.on('disconnect', function(){
       			$timeout(function(){
       				service.room.connected = false;
+      				service.room.users 	   = [];
       			},0);
       		});
 
@@ -68,7 +118,7 @@
 			function join(roomName){
 				if(service.room.name != roomName){
 					service.room.events = [];
-					service.room.name = roomName;
+					service.room.name 	= roomName;
 				}
 				service.room.connected = true;
 				service.room.events.push({
@@ -85,6 +135,7 @@
 					text	 : 'you left ' + roomName,
 					timestamp: new Date(),
 				});
+				service.room.users 	= [];
 				socket.emit('leave', roomName);
 			}
 			function send(roomName, text){

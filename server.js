@@ -29,8 +29,16 @@ var statics = {
 		'Captain America',
 		'Britney Spears'
 	],
-	counter : 0
+	counter : 0,
+	rooms: { 
+		/*
+		roomName : {
+			userId: user
+		}
+		*/
+	}
 }
+
 io.on('connection', function(socket) {
 
 	//
@@ -58,10 +66,23 @@ io.on('connection', function(socket) {
 	socket.on('join', function(roomName) {
 		socket.join(roomName, function(){
 			socket.session.rooms = socket.rooms;
-		});
-		socket.to(roomName).emit('action', {
-			text	 : socket.session.nickname + ' has joined',
-			timestamp: new Date()
+
+			// add user to rooms list
+			if(!statics.rooms[roomName]){
+				statics.rooms[roomName] = {};
+			}
+			statics.rooms[roomName][socket.session.id] = socket.session.nickname;
+
+			socket.emit('userList', statics.rooms[roomName]);
+
+			socket.to(roomName).emit('userEnter', {
+				text	 : socket.session.nickname + ' has joined',
+				timestamp: new Date(),
+				newUser  : { 
+					id 		 : socket.session.id,
+					nickname : socket.session.nickname
+				}
+			});
 		});
 	});
 
@@ -69,12 +90,24 @@ io.on('connection', function(socket) {
 	// Allow the client to leave a specified room
 	//
 	socket.on('leave', function(roomName) {
-		socket.to(roomName).emit('action', {
-			text	 : socket.session.nickname + ' has left',
-			timestamp: new Date()
-		})
 		socket.leave(roomName, function(){
 			socket.session.rooms = socket.rooms;
+
+			// remove user from room
+			if(statics.rooms[roomName]){
+				delete statics.rooms[roomName][socket.session.id];
+			}
+
+			socket.to(roomName).emit('userLeave', {
+				text	 : socket.session.nickname + ' has left',
+				timestamp: new Date(),
+				oldUser  : { 
+					id 		 : socket.session.id,
+					nickname : socket.session.nickname
+				}
+			});
+			
+
 		});
 
 	});
@@ -85,16 +118,17 @@ io.on('connection', function(socket) {
 	//
 	socket.on('send', function(data) {
 		var context = {
-			io    : io,
-			socket: socket,
-			data  : data,
-			room  : (data || {}).room,
-			msg   : {
+			io      : io,
+			socket  : socket,
+			data    : data,
+			room    : (data || {}).room,
+			msg     : {
 				text: data.text,
 				user: socket.session.nickname,
 			},
-			event : 'send',
-		}
+			event   : 'send',
+			rooms   : statics.rooms,
+		};
 		plugins
 		.runPlugins( context )
 		.then(function(context){
@@ -110,9 +144,16 @@ io.on('connection', function(socket) {
 	socket.on('disconnect', function(){
 		var session = socket.session;
 		for(var room in session.rooms){
-			socket.to(room).emit('action', {
-				text	 : session.nickname + ' has left',
-				timestamp: new Date()
+			if(statics.rooms[room]){
+				delete statics.rooms[room][socket.session.id];
+			}
+			socket.to(room).emit('userLeave', {
+				text	 : socket.session.nickname + ' has left',
+				timestamp: new Date(),
+				oldUser  : { 
+					id 		 : socket.session.id,
+					nickname : socket.session.nickname
+				}
 			});
 		}
 	})

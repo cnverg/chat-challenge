@@ -39,10 +39,17 @@ module.exports = {
 
 				// send to everyone in the room
 				for(var room in socket.rooms){
-					context.socket.to(room).emit('action', {
+					context.socket.to(room).emit('userChangeName', {
 						text     : oldNick + ' has renamed to ' + nickname,
 						timestamp: new Date(),
+						user     : {
+							id		: socket.session.id,
+							nickname: socket.session.nickname
+						}
 					});
+					if(context.rooms[room] && context.rooms[room][socket.session.id]){
+						context.rooms[room][socket.session.id] = nickname;
+					}
 				}
 				// remove message so that it wont be sent
 				context.msg = null;

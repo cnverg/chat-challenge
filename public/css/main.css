@@ -35,3 +35,11 @@
 .eventViewer .timestamp {
 	color: #ccc;
 }
+
+.userListPanel {
+	padding: 5px;
+	border: 1px solid silver;
+	height: 490px;
+	border-radius: 5px;
+	margin-right: 2px;
+}
