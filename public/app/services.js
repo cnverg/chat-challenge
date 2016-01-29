@@ -94,7 +94,7 @@
 				})
 			}
 			function changeName(nickname){
-				socket.emit('changeName', nickname);
+				send(null, '/rename ' + nickname);
 			}
 		}
 	);

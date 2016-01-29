@@ -9,6 +9,8 @@
 			<span ng-bind="message.user">
 			</span>
 			<i>says:</i>
+			<span ng-if="message.onlyYou" 
+				  style="color:#aaa"><i>This message can only be seen by you.</i></span>
 		</h5>
 		<span ng-bind="message.text"></span>
 		<div ng-if="message.attachments" class="attachments" >
@@ -17,8 +19,6 @@
 				 ng-switch="attachment.type">
 				 <giphy-attachment content="attachment" ng-switch-when="giphy">
 				 </giphy-attachment>
-				 <error-attachment content="attachment" ng-switch-when="error">
-				 </error-attachment>
 			</div>
 		</div>
 	</div>

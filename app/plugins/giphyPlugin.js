@@ -25,7 +25,7 @@ module.exports = function(context){
 					response.statusCode != 200 || 
 					json.meta.status != 200 || 
 					json.data.length == 0 ){
-					reject('A giphy could not be found with "' + giphyText + '"', context);
+					reject('A giphy could not be found with "' + giphyText + '"');
 				}else {
 					msg.attachments = msg.attachments || [];
 					msg.attachments.push({
@@ -39,7 +39,7 @@ module.exports = function(context){
 			});
 		}else{
 			reject('The message should start with "/giphy" ' +
-				   'and a message has to be provided after.',context);
+				   'and a message has to be provided after.');
 		}
 	});
 }

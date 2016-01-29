@@ -19,16 +19,28 @@ server.listen(3000, function() {
 // Handle a new client connection and setup
 // event handlers
 //
-var id = 0;
+var statics = {
+	defaultNames : [
+		'Harry Potter',
+		'John Smith',
+		'Anonymous',
+		'Peter Pan',
+		'Will Smith',
+		'Captain America',
+		'Britney Spears'
+	],
+	counter : 0
+}
 io.on('connection', function(socket) {
 
 	//
 	// initialize session
 	//
-	id++;
+	statics.counter++;
 	socket.session = {
-		id: id,
-		nickname: 'Uknown ' + id
+		id		: statics.counter,
+		nickname: statics.defaultNames[Math.round(Math.random()*statics.defaultNames.length)] + ' ' + statics.counter,
+		rooms	: socket.rooms
 	};
 
 	// 
@@ -36,7 +48,7 @@ io.on('connection', function(socket) {
 	//
 	socket.emit('welcome', {
 		nickname: socket.session.nickname,
-		id: socket.session.id
+		id		: socket.session.id
 	});
 
 
@@ -44,30 +56,13 @@ io.on('connection', function(socket) {
 	// Allow the client to join a specified room
 	//
 	socket.on('join', function(roomName) {
-		socket.join(roomName);
-		socket.to(roomName).emit('action', {
-			message: socket.session.nickname + ' has joined'
+		socket.join(roomName, function(){
+			socket.session.rooms = socket.rooms;
 		});
-	});
-
-	//
-	// Allow the client to change its nickname
-	//
-	socket.on('changeName', function(nickname){
-		var oldNick = socket.session.nickname;
-		if(nickname == oldNick)return;
-		socket.emit('changeName', {
-			newNickname: nickname,
-			oldNickname: oldNick,
-			text       : 'you have changed the name to ' + nickname,
-			timestamp  : new Date(),
-		})
-		for(var room in socket.rooms){
-			socket.to(room).emit('action', {
-				message: oldNick + ' has renamed to ' + nickname
-			});
-		}
-		socket.session.nickname = nickname;
+		socket.to(roomName).emit('action', {
+			text	 : socket.session.nickname + ' has joined',
+			timestamp: new Date()
+		});
 	});
 
 	//
@@ -75,13 +70,14 @@ io.on('connection', function(socket) {
 	//
 	socket.on('leave', function(roomName) {
 		socket.to(roomName).emit('action', {
-			message: socket.session.nickname + ' has left'
+			text	 : socket.session.nickname + ' has left',
+			timestamp: new Date()
 		})
-		socket.leave(roomName);
-
+		socket.leave(roomName, function(){
+			socket.session.rooms = socket.rooms;
+		});
 
 	});
-
 
 	//
 	// Allow the client to send a message to any room
@@ -112,12 +108,13 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('disconnect', function(){
-		for(var room in socket.rooms){
+		var session = socket.session;
+		for(var room in session.rooms){
 			socket.to(room).emit('action', {
-				message: oldNick + ' has renamed to ' + nickname
+				text	 : session.nickname + ' has left',
+				timestamp: new Date()
 			});
 		}
-		console.log('disconnected');
 	})
 
 });

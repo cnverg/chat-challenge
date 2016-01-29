@@ -82,7 +82,7 @@ function defaultPlugin(context){
 			io.to(room).emit('message', msg);
 			resolve(context);
 		} else {
-			reject('Message cannot be empty', context);
+			reject('Message cannot be empty');
 		}
 	});
 }
@@ -92,7 +92,7 @@ function defaultPlugin(context){
 function uknownCommandPlugin(context){
 	return new Promise(function(resolve, reject){
 		reject('Uknown command, messages that starts with "/" are commands. ' +
-			   'If you want to start with "/" try preceding the "/" with a space', context);
+			   'If you want to start with "/" try preceding the "/" with a space');
 	});
 }
 
@@ -107,26 +107,24 @@ function getDefaultErrorPlugin(context){
 	return function defaultErrorPlugin(err) {
 		return new Promise(function(resolve, reject){
 			if(!context)return reject(err);
-			if(!context.msg)return reject(err);
 
-			var msg = context.msg;
 			var socket = context.socket;
-			if(!err) err = {};
+
+
+			// normalize err object
+			var errMessage = null;
 			if(typeof err == 'string'){
-				err = { message: err };
+				errMessage = err;
+			} else {
+				errMessage = (err||{}).message || 'An error has occurred.';
 			}
-			if(err instanceof Error){
-				err = {
-					message: 'An error has occurred.',
-					innerError: err
-				}
+
+			var msg = {
+				timestamp: new Date(),
+				user	 : 'server',
+				text     : errMessage,
+				onlyYou  : true,
 			}
-			msg.attachments = msg.attachments || [];
-			var errMsg = err.message || 'An error has occurred.';
-			msg.attachments.push({
-				type   : 'error',
-				message: errMsg
-			});
 			socket.emit('message', msg);
 			resolve();
 		});

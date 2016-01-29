@@ -17,6 +17,11 @@ module.exports = {
 				var nickname = rename.exec(msg.text)[1];
 				var oldNick = socket.session.nickname;
 
+				if(nickname.length > 100){
+					reject('New name is too long');
+					return;
+				}
+
 				// emit to the socket for rename
 				socket.emit('changeName', {
 					newNickname: nickname,
@@ -25,16 +30,17 @@ module.exports = {
 					timestamp  : new Date(),
 				});
 
+				if(nickname == oldNick)return; // no error 
+
 				// update nickname in session
 				socket.session.nickname = nickname;
 
 				// build message for others in chat
-				if(nickname == oldNick)return;
 
 				// send to everyone in the room
 				for(var room in socket.rooms){
 					context.socket.to(room).emit('action', {
-						message  : oldNick + ' has renamed to ' + nickname,
+						text     : oldNick + ' has renamed to ' + nickname,
 						timestamp: new Date(),
 					});
 				}
@@ -43,7 +49,7 @@ module.exports = {
 				resolve(context);
 
 			} else {
-				reject('Message should start with "/rename" and a name has to be provided', context);
+				reject('Message should start with "/rename" and a name has to be provided');
 			}
 		});
 	}
