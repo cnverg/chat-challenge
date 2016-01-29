@@ -92,6 +92,7 @@ io.on('connection', function(socket) {
 			io    : io,
 			socket: socket,
 			data  : data,
+			room  : (data || {}).room,
 			msg   : {
 				text: data.text,
 				user: socket.session.nickname,
@@ -99,11 +100,13 @@ io.on('connection', function(socket) {
 			event : 'send',
 		}
 		plugins
-		.runPlugins( context , plugins.allPlugins )
+		.runPlugins( context )
 		.then(function(context){
-			if(context.msg){
-				io.to(data.room).emit('message', context.msg);
-			}
+			console.log('message processed');
+		})
+		.catch(function(err){
+			console.log('this point should never be reached ALERT!!');
+			console.log(err);
 		});
 
 	});

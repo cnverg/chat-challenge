@@ -5,6 +5,7 @@ module.exports = function(context){
 	return new Promise(function(resolve, reject){;
 
 		var msg = context.msg;
+		var io  = context.io;
 		if(!msg)return resolve(context);
 
 		// /giphy COMMAND
@@ -24,23 +25,21 @@ module.exports = function(context){
 					response.statusCode != 200 || 
 					json.meta.status != 200 || 
 					json.data.length == 0 ){
-
-					msg.attachments = msg.attachments || [];
-					msg.attachments.push({
-						type: 'giphy',
-						text: null
-					});
+					reject('A giphy could not be found with "' + giphyText + '"', context);
 				}else {
 					msg.attachments = msg.attachments || [];
 					msg.attachments.push({
 						type: 'giphy',
 						url : json.data[0].images.fixed_width.url
 					});
+					io.to(context.room).emit('message', msg);
+					resolve(context);
 				}
-				resolve(context);
+				
 			});
 		}else{
-			resolve(context);
+			reject('The message should start with "/giphy" ' +
+				   'and a message has to be provided after.',context);
 		}
 	});
 }
