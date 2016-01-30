@@ -40,32 +40,34 @@
 			$scope.usersCount = function(){
 				return currentRoom.users ? Object.keys(currentRoom.users).length : 0;
 			}
-			$scope.openRename = function(){
-				DialogService.showRename({ oldNickname: user.nickname })
-					.then(function(newNickname){
-						ChatService.changeName(newNickname);
-					});
+			$scope.leave = function(){
+				DialogService.showConfirmModal({ 
+					text : 'Are you sure you want to leave this room', 
+					title: 'Leave the Room'
+				})
+				.then(function(){
+					ChatService.leave(currentRoom.name);
+				});
+			}
+			$scope.changeNickname = function(){
+				DialogService.showInputModal({ 
+					text: user.nickname, 
+					title:  'Write the new nickname'
+				})
+				.then(function(newNickname){
+					ChatService.changeName(newNickname);
+				});
+			}
+			$scope.joinRoom = function(){
+				DialogService.showInputModal({ 
+					text: currentRoom.name,
+					title:  'Write the name of the room to join'
+				})
+				.then(function(newRoom){
+					ChatService.join(newRoom);
+				});
 			}
 
-
-		}
-	)
-	.controller('RenameController', 
-		function($scope, options, close, $timeout){
-			$scope.active = false;
-	        $timeout(function(){ $scope.active = true; }, 50);
-	        var exit = $scope.exit = function (newNickname) {
-	            $scope.active = false; 
-	            close(newNickname, 300);
-	        };
-
-
-	        $scope.newNickname = options.oldNickname;
-
-	        $scope.done = function(newNickname){
-	        	if(newNickname)
-	        		exit(newNickname);
-	        }
 
 		}
 	)

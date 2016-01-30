@@ -25,6 +25,10 @@
 	<script src="app/services.js" type="text/javascript"></script>
 	<script src="app/controllers.js" type="text/javascript"></script>
 
+	<!-- modal -->
+	<script src="app/modals/modalControllers.js" type="text/javascript"></script>	
+	<script src="app/modals/modalService.js" type="text/javascript"></script>	
+
 	<!-- filters -->
 	<script src="app/filters.js" type="text/javascript"></script>
 
@@ -45,14 +49,14 @@
 				<a href="#" class="brand-logo">Chat Application</a>
 				<ul>
 					<li class="right">
-						<a ng-click="openRename()">Change Nickname</a>
+						<a ng-click="changeNickname()">Change Nickname</a>
 					</li>
-			<!-- 		<li class="right" ng-if="!currentRoom.connected">
-						<a ng-click="openJoinRoom()">Join Room</a>
+					<li class="right speed-0" ng-if="!currentRoom.connected">
+						<a ng-click="joinRoom()">Join Room</a>
 					</li>
-					<li class="right" ng-if="currentRoom.connected">
-						<a ng-click="leaveRoom()">Leave Room</a>
-					</li> -->
+					<li class="right speed-0" ng-if="currentRoom.connected">
+						<a ng-click="leave(currentRoom.name)">Leave Room</a>
+					</li>
 				</ul>
 			</div>
 		</nav>
@@ -104,31 +108,6 @@
 
 				<!-- Conversation and Room Info -->
 				<div class="conversationPanel  col s9">
-
-					<!-- Panel for Room and Nickname Change -->
-					<div class="roomInfoPanel " align="center">
-
-						<!-- Join or Leave Room Form -->
-						<form class="form-inline col s6" 
-							  ng-submit="currentRoom.connected ? leave(newRoom) : join(newRoom)">
-							<input class="col s7 low-margin-input" 
-								ng-model="newRoom" ng-readonly="currentRoom.connected"
-								type="text"/>
-							<button class="btn col s5" ng-if="!currentRoom.connected">Join</button>
-							<button class="btn col s5" ng-if=" currentRoom.connected">Leave</button>
-
-						</form>
-
-						<!-- Change Name form -->
-						<form class="form-inline col s6" 
-							  ng-submit="changeName(newNickname)">
-
-							<input ng-model="newNickname" type="text" class="col s7 low-margin-input"/>
-							<button class="btn col s5">Rename</button>
-
-						</form>
-
-					</div>
 
 
 					<!-- message Viewer -->

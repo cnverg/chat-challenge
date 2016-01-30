@@ -7,7 +7,7 @@
 
 /* Events Container */
 .collection.messagesScroller {
-	height: 450px;
+	height: 500px;
 	background-color: #f0f0f0;
 	overflow: scroll;
 	margin: 0px;

@@ -150,34 +150,7 @@
 				send(null, '/rename ' + nickname);
 			}
 		}
-	)
-	.factory('DialogService', function DialogService(ModalService, $q){
-        var service = {};
-        
-        
-        service.showRename = function(options){
-        	var defered = $q.defer();
-            ModalService.showModal({
-                templateUrl: "app/modals/renameModal.html",
-                controller: "RenameController",
-                inputs: {
-                    options: options || {} // { oldNickname: '' }
-                }
-            }).then(function(modal){
-            	modal.close
-            	.then(function(newNickname){
-            		if(typeof newNickname == 'string' && newNickname.length > 0){
-	            		defered.resolve(newNickname);
-	            	}else{
-	            		defered.reject();
-	            	}
-            	});
-            });
-            return defered.promise;
-        }
-        
-        return service;
-    });
+	);
 	
 
 })();
