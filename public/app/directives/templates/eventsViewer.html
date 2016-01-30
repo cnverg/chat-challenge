@@ -1,0 +1,22 @@
+<div class="messagesScroller collection" auto-scroll>
+		
+	<!-- Event -->
+	<div ng-repeat="event in events" ng-switch="event.type">
+
+
+		<!-- View for actions -->
+		<action-viewer
+			action="event"
+			ng-switch-when="action">
+		</action-viewer>
+
+
+		<!-- View for message -->
+		<message-viewer 
+			message="event" 
+			ng-switch-when="message">
+		</message-viewer>
+
+
+	</div>
+</div>

@@ -1,0 +1,36 @@
+<div  class="media messageViewer eventViewer collection-item avatar" >
+	<!-- Message Viewer -->
+
+	<!-- User picture -->
+	<img class="circle light-silver-bg" src="imgs/uknown.png" >
+
+	<!-- Message tittle -->
+	<span class="Title" >
+		<b ng-bind="message.user"></b>
+		<i>says:</i>
+		<!-- In case that server whispered to the user -->
+		<span ng-if="message.onlyYou" class="silver">
+			<i>This message can only be seen by you.</i>
+		</span>
+	</span>
+
+	<!-- Text -->
+	<div>
+		<span ng-bind="message.text"></span>
+	</div>
+
+	<!-- Attachments -->
+	<div ng-if="message.attachments" class="attachments" >
+		<div class="attachment" 
+			 ng-repeat="attachment in message.attachments" 
+			 ng-switch="attachment.type">
+			 <giphy-attachment content="attachment" ng-switch-when="giphy">
+			 </giphy-attachment>
+		</div>
+	</div>
+
+
+	
+	<!-- Timestamp Floating within the Viewer -->
+	<span class="pull-right timestamp">{{message.timestamp | date : 'hh:mm:ss a'}}</span>
+</div>

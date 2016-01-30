@@ -1,50 +1,139 @@
 <!doctype html>
-<html>
-  <head>
+<html ng-app="chatApp">
 
-    <script src="/socket.io/socket.io.js"></script>
+<head>
+	<!-- Stylesheets -->
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" type="text/css" href="css/animate.css">
+	<link rel="stylesheet" type="text/css" href="css/animationClasses.css">
+	<link rel="stylesheet" type="text/css" href="css/animationSpeed.css">
+	<link rel="stylesheet" type="text/css" href="vendor/Materialize/dist/css/materialize.css">
 
-    <script>
 
-      var socket = io();
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="vendor/jquery/dist/jquery.min.js" type="text/javascript"></script>
+	<script src="vendor/Materialize/dist/js/materialize.js" type="text/javascript"></script>
 
-      //
-      // Handle an incoming message
-      //
-      socket.on('message', function (data) {
-        console.log(data);
-      });
+	
+	<!-- Angular -->
+	<script src="vendor/angular/angular.min.js" type="text/javascript"></script>
+	<script src="vendor/angular-animate/angular-animate.min.js" type="text/javascript"></script>
+	<script src="vendor/angular-modal-service/dst/angular-modal-service.min.js"></script>
 
-      //
-      // Join a room
-      //
-      function join(room) {
-        socket.emit('join', room);
-      }
+	<!-- core -->
+	<script src="app/app.js" type="text/javascript"></script>
+	<script src="app/services.js" type="text/javascript"></script>
+	<script src="app/controllers.js" type="text/javascript"></script>
 
-      //
-      // Leave a room
-      //
-      function leave(room) {
-        socket.emit('leave', room);
-      }
+	<!-- modal -->
+	<script src="app/modals/modalControllers.js" type="text/javascript"></script>	
+	<script src="app/modals/modalService.js" type="text/javascript"></script>	
 
-      //
-      // Send a message
-      //
-      function send(room, message) {
-        socket.emit('send', {
-          room: room,
-          message: message
-        });
-      }
+	<!-- filters -->
+	<script src="app/filters.js" type="text/javascript"></script>
 
-    </script>
+	<!-- directives -->
+	<script src="app/directives/attachments.js" type="text/javascript"></script>
+	<script src="app/directives/attributes.js" type="text/javascript"></script>
+	<script src="app/directives/eventsContainers.js" type="text/javascript"></script>
 
-  </head>
-  <body>
-    <button onclick="join('test')">Join</button>
-    <button onclick="leave('test')">Leave</button>
-    <button onclick="send('test', 'hello')">Send</button>
-  </body>
+</head>
+
+<body ng-controller="MainController" class="light-silver-bg">
+
+	<div class="row chatContainer push-s1" >
+
+		<!-- Application Header -->
+		<nav class="col s10 push-s1 teal">
+			<div class="nav-wrapper">
+				<a href="#" class="brand-logo">Chat Application</a>
+				<ul>
+					<li class="right">
+						<a ng-click="changeNickname()">Change Nickname</a>
+					</li>
+					<li class="right speed-0" ng-if="!currentRoom.connected">
+						<a ng-click="joinRoom()">Join Room</a>
+					</li>
+					<li class="right speed-0" ng-if="currentRoom.connected">
+						<a ng-click="leave(currentRoom.name)">Leave Room</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+		<!-- Application Body -->
+		<div class="col s10 push-s1 white-bg">
+			<div class="row marginless">
+
+
+				<!-- Left Panel (Profile and Users List) -->
+				<div class="leftPanel col s3  " >
+
+					<!-- Profile Box -->
+					<div class="center profilePanel">
+						<img src="imgs/uknown.png" alt="" class="circle responsive-img silver-bg">
+						<div class="left-align">
+							<b>Nickname: </b><span title="{{user.nickname}}">
+								{{user.nickname | trunc : 12}}
+							</span>
+						</div>
+						<div class="left-align">
+							<b>Room: </b><span ng-bind="currentRoom.name"></span>
+						</div>
+					</div>
+
+					<!-- Users header and count -->
+					<nav class="teal">
+						<div class="nav-wrapper">
+							<a href="javascript:void(0)" class="brand-logo center">
+								Users ({{usersCount()}})
+							</a>
+						</div>
+					</nav>
+
+					<!-- Users list -->
+					<div class="usersList">
+						<div class="collection marginless">
+							<div class="user collection-item" 
+								 ng-repeat="(id, nickname) in currentRoom.users"
+								 title="{{nickname}}">
+								<span>{{nickname | trunc : 15}}</span>
+								<span class="silver" ng-if="id == user.id"><i>You</i></span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+				<!-- Conversation and Room Info -->
+				<div class="conversationPanel  col s9">
+
+
+					<!-- message Viewer -->
+					<div class="messagesPanel">
+						<events-viewer events="currentRoom.events">
+						</events-viewer>
+					</div>
+
+
+					<!-- new Message form -->
+					<div class="newMessagePanel">
+						<div class="progress"  style="margin: 0;">
+						    <div class="indeterminate" ng-if="chatService.pending"></div>
+						</div>
+						<form ng-submit="send(newMessage)" >
+							<input class="col s10" 
+								   ng-disabled="!currentRoom.connected"
+								   ng-model="newMessage"  />
+							<button class="btn col s2"
+								   ng-disabled="!currentRoom.connected">Send</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
 </html>

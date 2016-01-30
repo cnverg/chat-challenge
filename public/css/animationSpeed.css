@@ -1,0 +1,441 @@
+
+/* Speed */
+.speed-0 {
+  animation-duration: 0ms;
+  -webkit-animation-duration: 0ms;
+  transition: 0ms;
+}
+.speed-50 {
+  animation-duration: 50ms;
+  -webkit-animation-duration: 50ms;
+  transition: 50ms;
+}
+.speed-100 {
+  animation-duration: 100ms;
+  -webkit-animation-duration: 100ms;
+  transition: 100ms;
+}
+.speed-150 {
+  animation-duration: 150ms;
+  -webkit-animation-duration: 150ms;
+  transition: 150ms;
+}
+.speed-200 {
+  animation-duration: 200ms;
+  -webkit-animation-duration: 200ms;
+  transition: 200ms;
+}
+.speed-250 {
+  animation-duration: 250ms;
+  -webkit-animation-duration: 250ms;
+  transition: 250ms;
+}
+.speed-300 {
+  animation-duration: 300ms;
+  -webkit-animation-duration: 300ms;
+  transition: 300ms;
+}
+.speed-350 {
+  animation-duration: 350ms;
+  -webkit-animation-duration: 350ms;
+  transition: 350ms;
+}
+.speed-400 {
+  animation-duration: 400ms;
+  -webkit-animation-duration: 400ms;
+  transition: 400ms;
+}
+.speed-450 {
+  animation-duration: 450ms;
+  -webkit-animation-duration: 450ms;
+  transition: 450ms;
+}
+.speed-500 {
+  animation-duration: 500ms;
+  -webkit-animation-duration: 500ms;
+  transition: 500ms;
+}
+.speed-550 {
+  animation-duration: 550ms;
+  -webkit-animation-duration: 550ms;
+  transition: 550ms;
+}
+.speed-600 {
+  animation-duration: 600ms;
+  -webkit-animation-duration: 600ms;
+  transition: 600ms;
+}
+.speed-650 {
+  animation-duration: 650ms;
+  -webkit-animation-duration: 650ms;
+  transition: 650ms;
+}
+.speed-700 {
+  animation-duration: 700ms;
+  -webkit-animation-duration: 700ms;
+  transition: 700ms;
+}
+.speed-750 {
+  animation-duration: 750ms;
+  -webkit-animation-duration: 750ms;
+  transition: 750ms;
+}
+.speed-800 {
+  animation-duration: 800ms;
+  -webkit-animation-duration: 800ms;
+  transition: 800ms;
+}
+.speed-850 {
+  animation-duration: 850ms;
+  -webkit-animation-duration: 850ms;
+  transition: 850ms;
+}
+.speed-900 {
+  animation-duration: 900ms;
+  -webkit-animation-duration: 900ms;
+  transition: 900ms;
+}
+.speed-950 {
+  animation-duration: 950ms;
+  -webkit-animation-duration: 950ms;
+  transition: 950ms;
+}
+.speed-1000 {
+  animation-duration: 1000ms;
+  -webkit-animation-duration: 1000ms;
+  transition: 1000ms;
+}
+.speed-1050 {
+  animation-duration: 1050ms;
+  -webkit-animation-duration: 1050ms;
+  transition: 1050ms;
+}
+.speed-1100 {
+  animation-duration: 1100ms;
+  -webkit-animation-duration: 1100ms;
+  transition: 1100ms;
+}
+.speed-1150 {
+  animation-duration: 1150ms;
+  -webkit-animation-duration: 1150ms;
+  transition: 1150ms;
+}
+.speed-1200 {
+  animation-duration: 1200ms;
+  -webkit-animation-duration: 1200ms;
+  transition: 1200ms;
+}
+.speed-1250 {
+  animation-duration: 1250ms;
+  -webkit-animation-duration: 1250ms;
+  transition: 1250ms;
+}
+.speed-1300 {
+  animation-duration: 1300ms;
+  -webkit-animation-duration: 1300ms;
+  transition: 1300ms;
+}
+.speed-1350 {
+  animation-duration: 1350ms;
+  -webkit-animation-duration: 1350ms;
+  transition: 1350ms;
+}
+.speed-1400 {
+  animation-duration: 1400ms;
+  -webkit-animation-duration: 1400ms;
+  transition: 1400ms;
+}
+.speed-1450 {
+  animation-duration: 1450ms;
+  -webkit-animation-duration: 1450ms;
+  transition: 1450ms;
+}
+.speed-1500 {
+  animation-duration: 1500ms;
+  -webkit-animation-duration: 1500ms;
+  transition: 1500ms;
+}
+.speed-1550 {
+  animation-duration: 1550ms;
+  -webkit-animation-duration: 1550ms;
+  transition: 1550ms;
+}
+.speed-1600 {
+  animation-duration: 1600ms;
+  -webkit-animation-duration: 1600ms;
+  transition: 1600ms;
+}
+.speed-1650 {
+  animation-duration: 1650ms;
+  -webkit-animation-duration: 1650ms;
+  transition: 1650ms;
+}
+.speed-1700 {
+  animation-duration: 1700ms;
+  -webkit-animation-duration: 1700ms;
+  transition: 1700ms;
+}
+.speed-1750 {
+  animation-duration: 1750ms;
+  -webkit-animation-duration: 1750ms;
+  transition: 1750ms;
+}
+.speed-1800 {
+  animation-duration: 1800ms;
+  -webkit-animation-duration: 1800ms;
+  transition: 1800ms;
+}
+.speed-1850 {
+  animation-duration: 1850ms;
+  -webkit-animation-duration: 1850ms;
+  transition: 1850ms;
+}
+.speed-1900 {
+  animation-duration: 1900ms;
+  -webkit-animation-duration: 1900ms;
+  transition: 1900ms;
+}
+.speed-1950 {
+  animation-duration: 1950ms;
+  -webkit-animation-duration: 1950ms;
+  transition: 1950ms;
+}
+.speed-2000 {
+  animation-duration: 2000ms;
+  -webkit-animation-duration: 2000ms;
+  transition: 2000ms;
+}
+.speed-2050 {
+  animation-duration: 2050ms;
+  -webkit-animation-duration: 2050ms;
+  transition: 2050ms;
+}
+.speed-2100 {
+  animation-duration: 2100ms;
+  -webkit-animation-duration: 2100ms;
+  transition: 2100ms;
+}
+.speed-2150 {
+  animation-duration: 2150ms;
+  -webkit-animation-duration: 2150ms;
+  transition: 2150ms;
+}
+.speed-2200 {
+  animation-duration: 2200ms;
+  -webkit-animation-duration: 2200ms;
+  transition: 2200ms;
+}
+.speed-2250 {
+  animation-duration: 2250ms;
+  -webkit-animation-duration: 2250ms;
+  transition: 2250ms;
+}
+.speed-2300 {
+  animation-duration: 2300ms;
+  -webkit-animation-duration: 2300ms;
+  transition: 2300ms;
+}
+.speed-2350 {
+  animation-duration: 2350ms;
+  -webkit-animation-duration: 2350ms;
+  transition: 2350ms;
+}
+.speed-2400 {
+  animation-duration: 2400ms;
+  -webkit-animation-duration: 2400ms;
+  transition: 2400ms;
+}
+.speed-2450 {
+  animation-duration: 2450ms;
+  -webkit-animation-duration: 2450ms;
+  transition: 2450ms;
+}
+.speed-2500 {
+  animation-duration: 2500ms;
+  -webkit-animation-duration: 2500ms;
+  transition: 2500ms;
+}
+.speed-2550 {
+  animation-duration: 2550ms;
+  -webkit-animation-duration: 2550ms;
+  transition: 2550ms;
+}
+.speed-2600 {
+  animation-duration: 2600ms;
+  -webkit-animation-duration: 2600ms;
+  transition: 2600ms;
+}
+.speed-2650 {
+  animation-duration: 2650ms;
+  -webkit-animation-duration: 2650ms;
+  transition: 2650ms;
+}
+.speed-2700 {
+  animation-duration: 2700ms;
+  -webkit-animation-duration: 2700ms;
+  transition: 2700ms;
+}
+.speed-2750 {
+  animation-duration: 2750ms;
+  -webkit-animation-duration: 2750ms;
+  transition: 2750ms;
+}
+.speed-2800 {
+  animation-duration: 2800ms;
+  -webkit-animation-duration: 2800ms;
+  transition: 2800ms;
+}
+.speed-2850 {
+  animation-duration: 2850ms;
+  -webkit-animation-duration: 2850ms;
+  transition: 2850ms;
+}
+.speed-2900 {
+  animation-duration: 2900ms;
+  -webkit-animation-duration: 2900ms;
+  transition: 2900ms;
+}
+.speed-2950 {
+  animation-duration: 2950ms;
+  -webkit-animation-duration: 2950ms;
+  transition: 2950ms;
+}
+.speed-3000 {
+  animation-duration: 3000ms;
+  -webkit-animation-duration: 3000ms;
+  transition: 3000ms;
+}
+.speed-3050 {
+  animation-duration: 3050ms;
+  -webkit-animation-duration: 3050ms;
+  transition: 3050ms;
+}
+.speed-3100 {
+  animation-duration: 3100ms;
+  -webkit-animation-duration: 3100ms;
+  transition: 3100ms;
+}
+.speed-3150 {
+  animation-duration: 3150ms;
+  -webkit-animation-duration: 3150ms;
+  transition: 3150ms;
+}
+.speed-3200 {
+  animation-duration: 3200ms;
+  -webkit-animation-duration: 3200ms;
+  transition: 3200ms;
+}
+.speed-3250 {
+  animation-duration: 3250ms;
+  -webkit-animation-duration: 3250ms;
+  transition: 3250ms;
+}
+.speed-3300 {
+  animation-duration: 3300ms;
+  -webkit-animation-duration: 3300ms;
+  transition: 3300ms;
+}
+.speed-3350 {
+  animation-duration: 3350ms;
+  -webkit-animation-duration: 3350ms;
+  transition: 3350ms;
+}
+.speed-3400 {
+  animation-duration: 3400ms;
+  -webkit-animation-duration: 3400ms;
+  transition: 3400ms;
+}
+.speed-3450 {
+  animation-duration: 3450ms;
+  -webkit-animation-duration: 3450ms;
+  transition: 3450ms;
+}
+.speed-3500 {
+  animation-duration: 3500ms;
+  -webkit-animation-duration: 3500ms;
+  transition: 3500ms;
+}
+.speed-3550 {
+  animation-duration: 3550ms;
+  -webkit-animation-duration: 3550ms;
+  transition: 3550ms;
+}
+.speed-3600 {
+  animation-duration: 3600ms;
+  -webkit-animation-duration: 3600ms;
+  transition: 3600ms;
+}
+.speed-3650 {
+  animation-duration: 3650ms;
+  -webkit-animation-duration: 3650ms;
+  transition: 3650ms;
+}
+.speed-3700 {
+  animation-duration: 3700ms;
+  -webkit-animation-duration: 3700ms;
+  transition: 3700ms;
+}
+.speed-3750 {
+  animation-duration: 3750ms;
+  -webkit-animation-duration: 3750ms;
+  transition: 3750ms;
+}
+.speed-3800 {
+  animation-duration: 3800ms;
+  -webkit-animation-duration: 3800ms;
+  transition: 3800ms;
+}
+.speed-3850 {
+  animation-duration: 3850ms;
+  -webkit-animation-duration: 3850ms;
+  transition: 3850ms;
+}
+.speed-3900 {
+  animation-duration: 3900ms;
+  -webkit-animation-duration: 3900ms;
+  transition: 3900ms;
+}
+.speed-3950 {
+  animation-duration: 3950ms;
+  -webkit-animation-duration: 3950ms;
+  transition: 3950ms;
+}
+.speed-4000 {
+  animation-duration: 4000ms;
+  -webkit-animation-duration: 4000ms;
+  transition: 4000ms;
+}
+.speed-10000 {
+  animation-duration: 10000ms;
+  -webkit-animation-duration: 10000ms;
+  transition: 10000ms;
+}
+.speed-20000 {
+  animation-duration: 20000ms;
+  -webkit-animation-duration: 20000ms;
+  transition: 20000ms;
+}
+.speed-60000 {
+  animation-duration: 60000ms;
+  -webkit-animation-duration: 60000ms;
+  transition: 60000ms;
+}
+
+
+
+
+
+
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+.delay-200 {
+  animation-delay: 200ms;
+}
+.delay-300 {
+  animation-delay: 300ms;
+}
+.delay-400 {
+  animation-delay: 400ms;
+}

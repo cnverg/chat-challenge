@@ -1,0 +1,16 @@
+<!-- Modal Structure -->
+<div class="lean-overlay" id="materialize-lean-overlay-12" 
+	 style="z-index: 1002; display: block; opacity: 0.5;" ng-click="exit(false)">
+</div>
+<div id="modal1" class="modal speed-300 ani-fadeInExpand ani-fadeOutShrink" ng-if="active" esc-key="exit();">
+	
+	<div class="modal-content">
+		<h4 ng-bind="title"></h4>
+		<p ng-if="text" ng-bind="text"></p>
+	</div>
+	<div class="modal-footer">
+		<button class="waves-effect waves-green btn-flat" ng-click="exit(true);" autofocus>Yes</button>
+		<button class="waves-effect waves-green btn-flat" ng-click="exit(false);">No</button>
+	</div>
+	
+</div>
