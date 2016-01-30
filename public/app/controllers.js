@@ -1,17 +1,24 @@
 /*globals angular*/
 (function(){ 'use strict'
 
-	angular.module('chatApp').controller('MainController', 
-		function($scope, ChatService){
+	angular.module('chatApp')
+	.controller('MainController', 
+		function($scope, ChatService, DialogService){
 
-			$scope.newRoom = "test";
-			$scope.newMessage = "whats up";
-			$scope.user = ChatService.user;
-			$scope.newNickname = null;
+			// objects used in view
+			var user 		= $scope.user 		 = ChatService.user;
 			var currentRoom = $scope.currentRoom = ChatService.room;
-			
 
-			ChatService.join('test');
+			// ng-models for inputs
+			$scope.newRoom = "Lobby";
+			$scope.newMessage = "";
+			$scope.newNickname = null;
+			
+			// enter the lobby
+			ChatService.join('Lobby');
+
+			
+			// functions for the view
 			$scope.join = function(room){
 				ChatService.join(room);
 			}
@@ -30,11 +37,35 @@
 				}
 				$scope.newNickname = '';
 			}
-			$scope.$watch('currentRoom.events.length', function(){
-				var element = $('.messagesPanel');
-				$(element).animate({ scrollTop: $(element).height() }, "slow");
-			});
+			$scope.usersCount = function(){
+				return currentRoom.users ? Object.keys(currentRoom.users).length : 0;
+			}
+			$scope.openRename = function(){
+				DialogService.showRename({ oldNickname: user.nickname })
+					.then(function(newNickname){
+						ChatService.changeName(newNickname);
+					});
+			}
 
+
+		}
+	)
+	.controller('RenameController', 
+		function($scope, options, close, $timeout){
+			$scope.active = false;
+	        $timeout(function(){ $scope.active = true; }, 50);
+	        var exit = $scope.exit = function (newNickname) {
+	            $scope.active = false; 
+	            close(newNickname, 300);
+	        };
+
+
+	        $scope.newNickname = options.oldNickname;
+
+	        $scope.done = function(newNickname){
+	        	if(newNickname)
+	        		exit(newNickname);
+	        }
 
 		}
 	)

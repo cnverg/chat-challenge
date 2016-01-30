@@ -32,24 +32,29 @@ var statics = {
 	counter : 0,
 	rooms: { 
 		/*
-		roomName : {
+		[roomName] : {
 			userId: user
 		}
 		*/
 	}
-}
+};
 
 io.on('connection', function(socket) {
+
 
 	//
 	// initialize session
 	//
 	statics.counter++;
+	var nameIdx = Math.round(Math.random()*(statics.defaultNames.length-1));
 	socket.session = {
 		id		: statics.counter,
-		nickname: statics.defaultNames[Math.round(Math.random()*statics.defaultNames.length)] + ' ' + statics.counter,
-		rooms	: socket.rooms
+		nickname: statics.defaultNames[nameIdx] + ' ' + statics.counter,
+
+		// keep track of rooms joined to handle disconnect
+		rooms	: socket.rooms 
 	};
+
 
 	// 
 	// Send welcome data to the client
@@ -63,54 +68,52 @@ io.on('connection', function(socket) {
 	//
 	// Allow the client to join a specified room
 	//
-	socket.on('join', function(roomName) {
+	socket.on('join', function(roomName, done) {
 		socket.join(roomName, function(){
+			// update rooms joined
 			socket.session.rooms = socket.rooms;
 
 			// add user to rooms list
-			if(!statics.rooms[roomName]){
-				statics.rooms[roomName] = {};
-			}
-			statics.rooms[roomName][socket.session.id] = socket.session.nickname;
+			addUserToRoom(roomName, socket.session);
 
+			// send user list to this client
 			socket.emit('userList', statics.rooms[roomName]);
 
-			socket.to(roomName).emit('userEnter', {
-				text	 : socket.session.nickname + ' has joined',
-				timestamp: new Date(),
-				newUser  : { 
-					id 		 : socket.session.id,
-					nickname : socket.session.nickname
-				}
-			});
+			// send room
+			socket.to(roomName).emit(
+				'userEnter', 
+				createUserEnterMessage(socket.session)
+			);
+
+			done(true);
 		});
 	});
+
+
 
 	//
 	// Allow the client to leave a specified room
 	//
-	socket.on('leave', function(roomName) {
+	socket.on('leave', function(roomName, done) {
 		socket.leave(roomName, function(){
+			// update rooms joined
 			socket.session.rooms = socket.rooms;
 
-			// remove user from room
-			if(statics.rooms[roomName]){
-				delete statics.rooms[roomName][socket.session.id];
-			}
+			// remove user from room and room if it is empty
+			removeUserFromRoom(roomName, socket.session);
 
-			socket.to(roomName).emit('userLeave', {
-				text	 : socket.session.nickname + ' has left',
-				timestamp: new Date(),
-				oldUser  : { 
-					id 		 : socket.session.id,
-					nickname : socket.session.nickname
-				}
-			});
-			
+			// notify everybody else
+			socket.to(roomName).emit(
+				'userLeave', 
+				createUserLeaveMessage(socket.session)
+			);
 
+			done(true);
 		});
 
 	});
+
+
 
 	//
 	// Allow the client to send a message to any room
@@ -141,22 +144,70 @@ io.on('connection', function(socket) {
 
 	});
 
+
+	//
+	// handle disconnected user 
+	// notify all users and remove from rooms
+	// 
 	socket.on('disconnect', function(){
 		var session = socket.session;
-		for(var room in session.rooms){
-			if(statics.rooms[room]){
-				delete statics.rooms[room][socket.session.id];
-			}
-			socket.to(room).emit('userLeave', {
-				text	 : socket.session.nickname + ' has left',
-				timestamp: new Date(),
-				oldUser  : { 
-					id 		 : socket.session.id,
-					nickname : socket.session.nickname
-				}
-			});
+		for(var roomName in session.rooms){
+
+			// remove user from room and room if it is empty
+			removeUserFromRoom(roomName, socket.session);
+
+			socket.to(roomName).emit(
+				'userLeave', 
+				createUserLeaveMessage(socket.session)
+			);
 		}
-	})
+	});
+
+
+	//////////////////////////////
+	// Remove user from room map
+	function removeUserFromRoom(roomName, session){
+		if(statics.rooms[roomName]){
+			var room = statics.rooms[roomName];
+			delete room[session.id];
+			// memory leak if empty rooms are not cleaned
+			if(Object.keys(room).length == 0) 
+				delete statics.rooms[roomName];
+		}
+	}
+
+	// Add user to room map
+	function addUserToRoom(roomName, session){
+		if(!statics.rooms[roomName]){
+				statics.rooms[roomName] = {};
+			}
+		statics.rooms[roomName][socket.session.id] = socket.session.nickname;
+	}
+
+
+	// Create SocketMessage for 'userLeave'
+	function createUserLeaveMessage(session){
+		return {
+			text	 : session.nickname + ' has left',
+			timestamp: new Date(),
+			oldUser  : { 
+				id 		 : session.id,
+				nickname : session.nickname
+			}
+		}
+	}
+
+	// Create SocketMessage for 'userEnter'
+	function createUserEnterMessage(session){
+		return {
+			text	 : session.nickname + ' has joined',
+			timestamp: new Date(),
+			newUser  : { 
+				id 		 : session.id,
+				nickname : session.nickname
+			}
+		}
+	}
 
 });
 

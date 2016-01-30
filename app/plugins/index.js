@@ -113,7 +113,10 @@ function getDefaultErrorPlugin(context){
 
 			// normalize err object
 			var errMessage = null;
-			if(typeof err == 'string'){
+			if(err instanceof Error){
+				console.error(err);
+				errMessage = 'An error has occurred.';
+			} else if(typeof err == 'string'){
 				errMessage = err;
 			} else {
 				errMessage = (err||{}).message || 'An error has occurred.';

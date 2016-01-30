@@ -1,0 +1,18 @@
+<!-- Modal Structure -->
+<div class="lean-overlay" id="materialize-lean-overlay-12" 
+	 style="z-index: 1002; display: block; opacity: 0.5;" ng-click="exit()">
+</div>
+<div id="modal1" class="modal speed-300 ani-fadeIn ani-fadeOut" ng-if="active">
+	
+	<div class="modal-content">
+		<h4>Write the new nickname</h4>
+		<form ng-submit="done(newNickname)">
+			<input type="text" ng-model="newNickname"></input>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="waves-effect waves-green btn-flat" ng-click="done(newNickname);">Done</button>
+		<button class="waves-effect waves-green btn-flat" ng-click="exit();">Cancel</button>
+	</div>
+	
+</div>

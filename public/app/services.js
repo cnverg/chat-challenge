@@ -1,7 +1,10 @@
 /*globals angular*/
 (function(){ 'use strict'
 
-	angular.module('chatApp').factory('ChatService', 
+	var chatApp = angular.module('chatApp');
+
+	chatApp
+	.factory('ChatService', 
 		function($rootScope, $timeout){
 
 			var socket = io();
@@ -109,39 +112,72 @@
 
 			// service exposed functions
 			function join(roomName){
-				if(service.room.name != roomName){
-					service.room.events = [];
-					service.room.name 	= roomName;
-				}
-				service.room.connected = true;
-				service.room.events.push({
-					type: 'action',
-					text: 'you joined ' + roomName,
-					timestamp: new Date(),
+				socket.emit('join', roomName, function(success){
+					$timeout(function(){
+						if(service.room.name != roomName){
+							service.room.events = [];
+							service.room.name 	= roomName;
+						}
+						service.room.connected = true;
+						service.room.events.push({
+							type: 'action',
+							text: 'you joined ' + roomName,
+							timestamp: new Date(),
+						});
+					});
 				});
-				socket.emit('join', roomName);
 			}
 			function leave(roomName){
-				service.room.connected = false;
-				service.room.events.push({
-					type	 : 'action' ,
-					text	 : 'you left ' + roomName,
-					timestamp: new Date(),
+				socket.emit('leave', roomName, function(success){
+					$timeout(function(){
+						service.room.connected = false;
+						service.room.events.push({
+							type	 : 'action' ,
+							text	 : 'you left ' + roomName,
+							timestamp: new Date(),
+						});
+						service.room.users 	= [];
+					});
 				});
-				service.room.users 	= [];
-				socket.emit('leave', roomName);
 			}
 			function send(roomName, text){
 				socket.emit('send', {
 					room: roomName,
 					text: text
-				})
+				});
 			}
 			function changeName(nickname){
 				send(null, '/rename ' + nickname);
 			}
 		}
-	);
+	)
+	.factory('DialogService', function DialogService(ModalService, $q){
+        var service = {};
+        
+        
+        service.showRename = function(options){
+        	var defered = $q.defer();
+            ModalService.showModal({
+                templateUrl: "app/modals/renameModal.html",
+                controller: "RenameController",
+                inputs: {
+                    options: options || {} // { oldNickname: '' }
+                }
+            }).then(function(modal){
+            	modal.close
+            	.then(function(newNickname){
+            		if(typeof newNickname == 'string' && newNickname.length > 0){
+	            		defered.resolve(newNickname);
+	            	}else{
+	            		defered.reject();
+	            	}
+            	});
+            });
+            return defered.promise;
+        }
+        
+        return service;
+    });
 	
 
 })();

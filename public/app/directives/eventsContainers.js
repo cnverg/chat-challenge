@@ -7,6 +7,7 @@
 	.directive('eventsViewer', function(){
 		return {
 			restrict : 'E',
+			replace  :true,
 			scope    : {
 				events: '='
 			},
@@ -17,6 +18,7 @@
 	.directive('messageViewer', function(){
 		return {
 			restrict : 'E',
+			replace  :true,
 			scope    : {
 				message: '='
 			},
@@ -27,6 +29,7 @@
 	.directive('actionViewer', function(){
 		return {
 			restrict : 'E',
+			replace  :true,
 			scope    : {
 				action: '='
 			},

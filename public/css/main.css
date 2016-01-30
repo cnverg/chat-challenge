@@ -1,45 +1,105 @@
+/* Application Container */
 .chatContainer{
-	padding: 30px 0px;
-}
-.messageBubble {
-	border: 1px solid #eee;
-	margin: 5px 0px;
-	border-radius: 5px;
-	padding: 5px;
-	box-shadow: 1px 1px 1px 0px #eee;
+	margin: 30px 150px;
+	height: 100%;
 }
 
-.actionBubble {
-	text-align: center;
-	padding: 2px;
-	background-color: #fdfdfd;
-	margin: 5px 0px;
-	border-radius: 100px;
-}
-.messagesPanel{
-	margin: 5px 0px;
-	padding: 5px;
-	border-radius: 10px;
-}
-.messagesScroller {
-	height: 400px;
+
+/* Events Container */
+.collection.messagesScroller {
+	height: 450px;
+	background-color: #f0f0f0;
 	overflow: scroll;
+	margin: 0px;
+	border-radius: 0px;
 }
 
-/* classes inside an eventViewer */
+
+/* Event, Message and Action Viewer */
+.eventViewer {
+	position: relative;
+}
+.actionViewer {
+	/*margin: 7px;*/
+	padding: 7px 0px;
+	border-bottom: 1px solid #e0e0e0;
+}
+.actionViewer .text{
+	background-color: #e1f3fb;
+	padding: 5px 14px;
+	border-radius: 5px;
+	border-bottom: 1px solid #e0e0e0;
+}
+.collection .collection-item.messageViewer.avatar {
+	margin: 2px 5px;
+	font-size: 13px;
+	min-height: 60px;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+
+
+/* Attachments and Timestamp */
 .eventViewer .attachment {
 	margin-left: 10px;
 	padding-left: 10px;
 	border-left: 5px solid #ddd;
+
 }
 .eventViewer .timestamp {
 	color: #ccc;
+	font-size: 10px;
+	position: absolute;
+	top: 10px;
+	right: 10px;
 }
 
-.userListPanel {
+/* left chat panel */
+.profilePanel {
+	font-size: 14px; 
 	padding: 5px;
-	border: 1px solid silver;
-	height: 490px;
-	border-radius: 5px;
-	margin-right: 2px;
 }
+.usersList {
+	overflow:scroll; 
+	height: 290px;
+}
+
+
+.modal {
+	transition: 300ms;
+}
+.modal {
+    transform: scaleX(1);
+    opacity: 1;
+    z-index: 1003;
+    top: 10%;
+    display: block !important;
+}
+
+
+/* helpers */
+.marginless {
+	margin: 0 !important;
+}
+.paddingless {
+	padding: 0 !important;
+}
+input.col + button.col, autocomplete.col + button.col {
+	margin: 4px 0px;
+}
+.low-margin-input {
+	margin-bottom: 3px !important;
+}
+.silver {
+	color: silver;
+}
+.silver-bg {
+	background-color: silver;
+}
+.white-bg {
+	background-color: #fff;
+}
+.light-silver-bg {
+	background-color: #f0f0f0;
+}
+
