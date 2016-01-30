@@ -8,6 +8,7 @@
 			// objects used in view
 			var user 		= $scope.user 		 = ChatService.user;
 			var currentRoom = $scope.currentRoom = ChatService.room;
+			var chatService = $scope.chatService = ChatService;
 
 			// ng-models for inputs
 			$scope.newRoom = "Lobby";

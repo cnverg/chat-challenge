@@ -119,6 +119,9 @@
 
 					<!-- new Message form -->
 					<div class="newMessagePanel">
+						<div class="progress"  style="margin: 0;">
+						    <div class="indeterminate" ng-if="chatService.pending"></div>
+						</div>
 						<form ng-submit="send(newMessage)" >
 							<input class="col s10" 
 								   ng-disabled="!currentRoom.connected"

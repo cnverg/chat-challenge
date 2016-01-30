@@ -119,7 +119,7 @@ io.on('connection', function(socket) {
 	// Allow the client to send a message to any room
 	// they have already joined, all plugins will run on this message
 	//
-	socket.on('send', function(data) {
+	socket.on('send', function(data, done) {
 		var context = {
 			io      : io,
 			socket  : socket,
@@ -135,9 +135,11 @@ io.on('connection', function(socket) {
 		plugins
 		.runPlugins( context )
 		.then(function(context){
+			done(true);
 			console.log('message processed');
 		})
 		.catch(function(err){
+			done(false);
 			console.log('this point should never be reached ALERT!!');
 			console.log(err);
 		});

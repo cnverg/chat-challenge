@@ -13,7 +13,8 @@
 				leave 	  : leave,
 				send  	  : send,
 				changeName: changeName,
-				socket: socket,
+				pending   : false,
+				socket	  : socket,
 				user: {
 					nickname: null,
 					id: null
@@ -141,10 +142,16 @@
 				});
 			}
 			function send(roomName, text){
+
 				socket.emit('send', {
 					room: roomName,
 					text: text
+				}, function(){
+					$timeout(function(){
+						service.pending = false;
+					});
 				});
+				service.pending = true;
 			}
 			function changeName(nickname){
 				send(null, '/rename ' + nickname);
