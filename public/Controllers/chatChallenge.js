@@ -1,32 +1,182 @@
-﻿app.controller('chatChallengeCtrl', function ($rootScope,$scope, SocketFactory) {
+﻿//
+//App module
+//
+
+angular.module('chatChallenge', ['ngCookies']);
+var app = angular.module('chatChallenge');
+
+//
+//Main Controller
+//
+app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory, LoginFactory) {
+
+    //
+    //Vars
+    //
+
     $scope.data = {};
     $scope.data.users = [];
-    var currentUser = "aneudy";
-    var defaultRoom = 'DevTeam';
+    $scope.currentUser = "";
+    $scope.currentMessage = "";
+    $scope.data.messages = [];
+    $scope.data.rooms = ["DevTeam"];
+    $scope.showModal = !LoginFactory.exist('userName');
+    $scope.currentRoom = $scope.data.rooms.length > 0 ? $scope.data.rooms[0] : "";
+    $scope.notAvailableUsers = [];
 
-    //$scope.data.rooms = ['DevTeam', 'All', 'Random'];
+    //
+    //Add a new message to the list of messages
+    //
 
-    $scope.addUser = function(user) {
-        $scope.data.users.push(user);
+    $scope.addMessage = function (msg, moment) {
+        var date = moment(msg.timestamp).format('MMMM Do YYYY h:mm a');
+        $scope.data.messages.push(
+        {
+            message: msg.message,
+            date: date,
+            userName: msg.userName
+        });
     };
 
-//    $scope.addUser();
+    //Handle when the user writes a message
 
-    SocketFactory.on('message', function (data) {
-        $scope.addUser(data.message);
-    });
+    $scope.sendMessage = function (room, message) {
+        if (message) {
+            addCurrentMessage(message, moment);
+            $scope.send(room, message);
+            $scope.currentMessage = "";
+        }
+    };
 
-    SocketFactory.on('updateUsers', function (data) {
-        $scope.data.users = data;
-    });
-
-    SocketFactory.emit('join', defaultRoom);
-    SocketFactory.emit('addUser', prompt("Please add your username"));
+    //
+    //Send message to sever
+    //
 
     $scope.send = function (room, message) {
         SocketFactory.emit('send', {
             room: room,
             message: message
         });
+    };
+
+    //
+    //Checks if the userName is available before starting the chat.
+    //
+
+    $scope.selectCurrentUser = function (userName) {
+        if (userName && $scope.isUserNameAvailable(userName)) {
+            startChat(userName);
+        } else {
+            alert('The username is not available. Please select another username');
+        }
+    };
+
+    //
+    //Handle when a messages arrives
+    //
+
+    SocketFactory.on('message', function (data) {
+        if($scope.currentUser) $scope.addMessage(data, moment);
+    });
+
+    //Update the list of connected users
+
+    SocketFactory.on('updateUsers', function (data) {
+        if ($scope.currentUser) {
+            $scope.data.users = data;
+        } else {
+            $scope.notAvailableUsers = data;
+        }
+    });
+
+    //
+    //Update the list of available rooms
+    //
+
+    SocketFactory.on('updateRooms', function (data) {
+        $scope.data.rooms = data;
+    });
+
+    //
+    //Destroy sockets handler when controller is destroyed
+    //
+
+    $scope.$on('$destroy', function (event) {
+        SocketFactory.removeListeners();
+    });
+
+    //
+    //Handle the logout functionality
+    //
+
+    $scope.logOut = function () {
+        LoginFactory.logOut();
+        $scope.toogleModal();
+        $scope.cleanUp();
+        SocketFactory.emit('leave');
+    };
+
+    //
+    //Checks if there is an user logged before starting chat
+    //
+
+    if ($scope.currentUser || LoginFactory.getCurrent()) {
+        startChat($scope.currentUser);
+    } 
+
+    //
+    //Add message to the message's list
+    //
+
+    function addCurrentMessage(message, moment) {
+        var msg = {
+            message: message,
+            date: Date.now(),
+            userName: $scope.currentUser
+        };
+        $scope.addMessage(msg, moment);
+    }
+
+    //
+    //Start the chat
+    //
+
+    function startChat(userName) {
+        if (LoginFactory.exist('userName')) {
+            $scope.currentUser = LoginFactory.getCurrent();
+        } else {
+            $scope.currentUser = userName;
+            LoginFactory.logIn(userName);
+            $scope.toogleModal();
+        }
+        SocketFactory.emit('join', {
+            roomName: $scope.currentRoom, userName: $scope.currentUser
+        });
+    }
+
+    //
+    //Show and hide the modal for user registration
+    //
+
+    $scope.toogleModal = function() {
+        $scope.showModal = !$scope.showModal;
+    };
+
+    //
+    //Delete all messages and users from the UI
+    //
+
+    $scope.cleanUp = function () {
+        $scope.data.users = [];
+        $scope.data.messages = [];
+        $scope.currentUser = "";
+    };
+
+    //
+    //Checks if an userName is available
+    //
+
+    $scope.isUserNameAvailable = function (userName) {
+        return $scope.notAvailableUsers.indexOf(userName) == -1;
     };
 });
