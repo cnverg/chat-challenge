@@ -59,3 +59,33 @@ app.factory('LoginFactory', function ($rootScope, $cookies) {
         }
     };
 })
+
+app.factory('GiphyFactory', function($http) {
+    return{
+        
+        isGiphyRequest: function(msg) {
+            return msg.indexOf('/giphy') != -1;
+        },
+        GetSearchTerm: function (msg) {
+            console.log(msg.split('/giphy')[1]);
+            return msg.split('/giphy')[1];
+        },
+        GetGiphyGif: function(searchTerm, $scope, moment, room) {
+            var q = searchTerm.trim().replace("'", '').split(' ');
+            var url = 'http://api.giphy.com/v1/gifs/search?q=' + q + '&api_key=dc6zaTOxFJmzC&limit=1';
+            $http.get(url)
+                .then(function (data) {
+                    if (data.data.data) {
+                        var message = data.data.data[0].images.fixed_height_small.url;
+                        var type = 'image'
+                        $scope.formatMessage(message, moment, type);
+                        $scope.send(room, {message: message, type: type});
+                        $scope.currentMessage = "";
+                    }
+                },
+                function(data){
+                    console.log(data);
+                });
+        }
+    };
+});

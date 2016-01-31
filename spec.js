@@ -1,12 +1,4 @@
-﻿describe('sorting the list of users', function () {
-    it('sorts in descending order by default', function () {
-        var a = 1;
-		var b = 1;
-		expect(a+b).toBe(2);
-    });
-});
-
-describe('chatChallenge', function() {
+﻿describe('chatChallenge', function() {
     beforeEach(angular.mock.module('chatChallenge'));
 
     var $controller;

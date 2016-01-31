@@ -4,7 +4,7 @@
         module('ngCookies', 'chatChallenge')
     );
 
-    var $scope, $rootScope, sckFactory, loginFactory, $controller, moment, chatChallengeCtrl;
+    var $scope, $rootScope, sckFactory, loginFactory, $controller, moment, chatChallengeCtrl, giphyFactory;
 
     beforeEach(function() {
         $scope = {
@@ -36,11 +36,16 @@
                 format: function(data) { return '01/30/2016'; }
             };
         };
+        giphyFactory =  {
+            isGiphyRequest: function() {},
+            GetSearchTerm: function () { },
+            GetGiphyGif: function () { }
+        };
     });
 
     beforeEach(angular.mock.inject(function (_$controller_) {
         $controller = _$controller_;
-        chatChallengeCtrl = $controller('chatChallengeCtrl', { $rootScope: $rootScope, $scope: $scope, SocketFactory: sckFactory, LoginFactory: loginFactory });
+        chatChallengeCtrl = $controller('chatChallengeCtrl', { $rootScope: $rootScope, $scope: $scope, SocketFactory: sckFactory, LoginFactory: loginFactory, GiphyFactory: giphyFactory });
     }));
 
     describe('addMessage', function() {
@@ -49,7 +54,8 @@
             msg = {
                 message: 'test',
                 date: '01/30/2016',
-                userName: 'aneguzman'
+                userName: 'aneguzman',
+                type: 'image'
             };
         });
 

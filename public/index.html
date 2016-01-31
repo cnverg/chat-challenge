@@ -46,11 +46,14 @@
                             <span class="username">{{msg.userName}}</span>
                             <span class="date">{{msg.date}}</span>
                         </div>
-                        <div ng-if="msg.userName == 'SERVER'">
+                        <div ng-if="msg.userName == 'SERVER' && msg.type == 'message'">
                             <strong>{{msg.message}}</strong>
                         </div>
-                        <div ng-if="msg.userName != 'SERVER'">
+                        <div ng-if="msg.userName != 'SERVER' && msg.type == 'message'">
                             {{msg.message}}
+                        </div>
+                        <div ng-if="msg.userName != 'SERVER' && msg.type == 'image'">
+                            <img src="{{msg.message}}" atl="gift"/>
                         </div>
                     </div>
                 </div>

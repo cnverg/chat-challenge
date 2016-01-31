@@ -8,7 +8,7 @@ var app = angular.module('chatChallenge');
 //
 //Main Controller
 //
-app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory, LoginFactory) {
+app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory, LoginFactory, GiphyFactory) {
 
     //
     //Vars
@@ -34,17 +34,39 @@ app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory,
         {
             message: msg.message,
             date: date,
-            userName: msg.userName
+            userName: msg.userName,
+            type: msg.type
         });
     };
+
+
+    //
+    //Add message to the message's list
+    //
+
+    $scope.formatMessage = function(message, moment, type) {
+        var msg = {
+            message: message,
+            date: Date.now(),
+            userName: $scope.currentUser,
+            type: type
+        };
+        $scope.addMessage(msg, moment);
+    }
 
     //Handle when the user writes a message
 
     $scope.sendMessage = function (room, message) {
         if (message) {
-            addCurrentMessage(message, moment);
-            $scope.send(room, message);
-            $scope.currentMessage = "";
+            if (GiphyFactory.isGiphyRequest(message)) {
+                var searchTerm = GiphyFactory.GetSearchTerm(message);
+                GiphyFactory.GetGiphyGif(searchTerm, $scope, moment, room);
+            } else {
+                var type = 'message';
+                $scope.formatMessage(message, moment, type);
+                $scope.send(room, { message: message, type: type });
+                $scope.currentMessage = "";
+            }
         }
     };
 
@@ -52,10 +74,12 @@ app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory,
     //Send message to sever
     //
 
-    $scope.send = function (room, message) {
+    $scope.send = function (room, data) {
+        console.log(data);
         SocketFactory.emit('send', {
             room: room,
-            message: message
+            message: data.message,
+            type: data.type
         });
     };
 
@@ -123,19 +147,6 @@ app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory,
     if ($scope.currentUser || LoginFactory.getCurrent()) {
         startChat($scope.currentUser);
     } 
-
-    //
-    //Add message to the message's list
-    //
-
-    function addCurrentMessage(message, moment) {
-        var msg = {
-            message: message,
-            date: Date.now(),
-            userName: $scope.currentUser
-        };
-        $scope.addMessage(msg, moment);
-    }
 
     //
     //Start the chat

@@ -61,7 +61,8 @@ io.on('connection', function (socket) {
         socket.to(data.room).emit('message', {
             message: data.message,
             timestamp: Date.now(),
-            userName: socket.username
+            userName: socket.username,
+            type: data.type
         });
 
     });
@@ -99,7 +100,8 @@ io.on('connection', function (socket) {
         sck.to(sck.room).emit('message', {
             message: sck.username + msg,
             timestamp: Date.now(),
-            userName: 'SERVER'
+            userName: 'SERVER',
+            type: 'message'
         });
     }
 
