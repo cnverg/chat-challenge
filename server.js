@@ -6,12 +6,15 @@ var app     = express();
 var server  = require('http').createServer(app);
 var io      = require('socket.io')(server);
 
+var Constants = require('./public/app/utils/constants');
+var users = [];
+var rooms = [ 'random' ];
+
 app.use(express.static(path.join(__dirname, '/public')));
 
 server.listen(3000, () => {
   console.log('Ready to chat on port 3000!');
 });
-
 
 /**
  * Handles a new client connection and setup
@@ -25,7 +28,7 @@ const connection = (socket) => {
    * @param  {[String]} roomId  id of the room
    * @return {[Unit]}           effectful void
    */
-  const join = (socket, roomId) => {
+  const join = (roomId) => {
     console.log(roomId);
     socket.join(roomId);
   };
@@ -36,7 +39,7 @@ const connection = (socket) => {
    * @param  {[String]} roomId  id of the room
    * @return {[Unit]}           effectful void
    */
-  const leave = (socket, roomId) => {
+  const leave = (roomId) => {
     console.log(roomId);
     socket.leave(roomId);
   };
@@ -47,20 +50,51 @@ const connection = (socket) => {
    * @param  {[Object]}   data  message information
    * @return {[Unit]}     effectful void
    */
-  const send = (socket, data) => {
+  const send = (data) => {
     console.log(data);
     
-    socket.to(data.room).emit('message', {
+    socket.to(data.room).emit(Constants.message, {
       message: data.message,
       timestamp: Date.now()
     });
   };
 
+  /**
+   * Allows client to know when a User logged in
+   * @param   {[Object]}  user  user
+   * @return  {[Unit]}          effectful void
+   */
+  const userEnter = (user) => {
+    users.push(user);
+    console.log("User Logged In");
+
+    socket.broadcast.emit(Constants.userUpdate, users);
+  }
+
+  /**
+   * Allows client to know when a User logged out
+   * @param   {[Object]}  user  user
+   * @return  {[Unit]}          effectful void
+   */
+  const userLeave = (user) => {
+    console.log("User Logged Out");
+
+    users = users.filter(u => u.id != user.id);
+    socket.broadcast.emit(Constants.userUpdate, users);
+  }
+
   // Adding listeners
   socket
-    .on('send', send.bind(null, socket))
-    .on('join', join.bind(null, socket))
-    .on('leave', leave.bind(null, socket));  
+    .on(Constants.send, send)
+    .on(Constants.join, join)
+    .on(Constants.leave, leave)
+    .on(Constants.userEnter, userEnter)
+    .on(Constants.userLeave, userLeave);
+
+  // Set up actions
+  socket
+    .emit(Constants.userUpdate, users)
+    .emit(Constants.roomUpdate, rooms);
 }
 
-io.on('connection', connection);
+io.on(Constants.connection, connection);

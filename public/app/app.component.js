@@ -1,4 +1,3 @@
-import './app.css!';
 import template from './app.html!text';
 import controller from './app.controller';
 

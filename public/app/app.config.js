@@ -13,10 +13,15 @@ const appConfig = ($provide, $stateProvider, $urlRouterProvider) => {
   $stateProvider.state('chat', {
     url: '/',
     template: '<app></app>'
+  }).state('chat.create', {
+    url: 'create',
+    template: '<app></app>'
   }).state('chat.private', {
-    url: 'private/{userId}'
+    url: 'private/{userId}',
+    template: '<app></app>'
   }).state('chat.room', {
-    url: 'room/{roomId}'
+    url: 'room/{roomId}',
+    template: '<app></app>'
   });
 }
 
