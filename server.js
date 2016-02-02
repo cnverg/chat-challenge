@@ -12,41 +12,56 @@ server.listen(3000, function () {
   console.log('Ready to chat on port 3000!');
 });
 
-//
-// Handle a new client connection and setup
-// event handlers
-//
-io.on('connection', function (socket) {
 
-  //
-  // Allow the client to join a specified room
-  //
-  socket.on('join', function (roomName) {
+/**
+ * Handles a new client connection and setup
+ * @param  {[Socket]} socket  socket in which the action will take effect
+ * @return {[Unit]}           effectful void
+ */
+const connection = (socket) => {
+  /**
+   * Allows the client to join a specified room
+   * @param  {[Socket]} socket  socket in which the action will take effect
+   * @param  {[String]} roomId  id of the room
+   * @return {[Unit]}           effectful void
+   */
+  const join = (socket, roomId) => {
+    console.log(roomId);
+    socket.join(roomId);
+  };
 
-    socket.join(roomName);
+  /**
+   * Allows the client to leave a specified room
+   * @param  {[Socket]} socket  socket in which the action will take effect
+   * @param  {[String]} roomId  id of the room
+   * @return {[Unit]}           effectful void
+   */
+  const leave = (socket, roomId) => {
+    console.log(roomId);
+    socket.leave(roomId);
+  };
 
-  });
-
-  //
-  // Allow the client to leave a specified room
-  //
-  socket.on('leave', function (roomName) {
-
-    socket.leave(roomName);
-
-  });
-
-  //
-  // Allow the client to send a message to any room
-  // they have already joined
-  //
-  socket.on('send', function (data) {
-
+  /**
+   * Allows client to send message to any room they belong to
+   * @param  {[Socket]} socket  socket in which the action will take effect
+   * @param  {[Object]}   data  message information
+   * @return {[Unit]}     effectful void
+   */
+  const send = (socket, data) => {
+    console.log(data);
+    console.log(socket.to(data.room));
+    
     socket.to(data.room).emit('message', {
       message: data.message,
       timestamp: Date.now()
     });
+  };
 
-  });
+  // Adding listeners
+  socket
+    .on('send', send.bind(null, socket))
+    .on('join', join.bind(null, socket))
+    .on('leave', leave.bind(null, socket));  
+}
 
-});
+io.on('connection', connection);
