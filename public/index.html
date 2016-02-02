@@ -1,50 +1,17 @@
 <!doctype html>
-<html>
+<html data-ng-app="app">
   <head>
-
-    <script src="/socket.io/socket.io.js"></script>
-
-    <script>
-
-      var socket = io();
-
-      //
-      // Handle an incoming message
-      //
-      socket.on('message', function (data) {
-        console.log(data);
-      });
-
-      //
-      // Join a room
-      //
-      function join(room) {
-        socket.emit('join', room);
-      }
-
-      //
-      // Leave a room
-      //
-      function leave(room) {
-        socket.emit('leave', room);
-      }
-
-      //
-      // Send a message
-      //
-      function send(room, message) {
-        socket.emit('send', {
-          room: room,
-          message: message
-        });
-      }
-
-    </script>
-
   </head>
   <body>
-    <button onclick="join('test')">Join</button>
-    <button onclick="leave('test')">Leave</button>
-    <button onclick="send('test', 'hello')">Send</button>
+
+    <div>
+      <app></app>
+    </div>
+
+    <script type="text/javascript" src="jspm_packages/system.js"></script>
+    <script type="text/javascript" src="config.js"></script>
+    <script>
+      System.import('app/app').catch(console.error.bind(console));
+    </script>
   </body>
 </html>
