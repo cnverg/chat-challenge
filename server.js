@@ -8,7 +8,7 @@ var io      = require('socket.io')(server);
 
 app.use(express.static(path.join(__dirname, '/public')));
 
-server.listen(3000, function () {
+server.listen(3000, () => {
   console.log('Ready to chat on port 3000!');
 });
 
@@ -49,7 +49,6 @@ const connection = (socket) => {
    */
   const send = (socket, data) => {
     console.log(data);
-    console.log(socket.to(data.room));
     
     socket.to(data.room).emit('message', {
       message: data.message,
