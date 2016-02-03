@@ -22,10 +22,6 @@ var rooms = getChatroomData();
 
 app.use(express.static(path.join(__dirname, '/public')));
 
-server.listen(3000, () => {
-  console.log('Ready to chat on port 3000!');
-});
-
 /**
  * Handles a new client connection and setup
  * @param  {[Socket]} socket  socket in which the action will take effect
@@ -145,3 +141,8 @@ const connection = function(socket) {
 }
 
 io.sockets.on(Constants.connection, connection);
+
+server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
+ const addr = server.address();
+ console.log("Chat server listening at", addr.address + ":" + addr.port);
+});
