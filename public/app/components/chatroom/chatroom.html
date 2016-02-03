@@ -1,14 +1,27 @@
-<div class='container relative'>
-  <div class='' data-ng-repeat="message in messages | orderBy:'-'">
-    <span data-ng-bind='message.from.name'></span>
-    <span data-ng-bind='message.content'></span>
+<div class='relative'>
+  <div class='collection messages'>
+    <div class='collection-item' data-ng-class="{ 'avatar': !message.fromSystem }"  data-ng-repeat='message in messages'>
+      <div data-ng-if='message.fromSystem'>
+        <span data-ng-bind='::message.content'></span>
+        <span class='right' data-ng-bind="::message.timestamp | date:'hh:mma'"></span>
+      </div>
+
+      <div data-ng-if='!message.fromSystem'>
+        <span class='right' data-ng-bind="::message.timestamp | date:'hh:mma'"></span>
+        <img class='left responsive-img circle' data-ng-src='{{ ::message.from.avatarUrl }}' />
+
+        <span class='clear title bold' data-ng-bind='message.from.name'></span>
+        <p data-ng-repeat="content in message.content track by $index" data-ng-bind='content'></p>
+      </div>
+    </div>
   </div>
 
-  <form name='messageForm' ng-submit='sendMessage()'>
-    <input required type='text' placeholder='Write something nice... If you want to, of course.' data-ng-model='message' />
-
-    <button class="btn" type="submit" data-ng-disabled='messageForm.$invalid'>Send
-      <i class="material-icons right">send</i>
-    </button> 
-  </form>
+  <div class='fixed bottom'>
+    <div class='relative'>
+      <form class='col s12' name='messageForm' ng-submit='sendMessage()'>
+        <input required type='text' placeholder='Write something nice... If you want to, of course.' data-ng-model='message' />
+        <i data-ng-click='sendMessage()' data-ng-class="{ 'visible' : messageForm.$valid }" class='send-icon material-icons'>send</i>
+      </form>      
+    </div>
+  </div>
 </div>

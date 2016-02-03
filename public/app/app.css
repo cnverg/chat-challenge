@@ -1,14 +1,44 @@
+.send-icon.visible {
+  color: #26a69a;
+  transform: scaleY(1);
+}
+
+.send-icon {
+  right: 0;
+  top: 14px;
+  position: absolute;
+
+  color: #000000;
+  transform: scaleY(0);
+
+  transition: color .3s linear, transform .4s linear;
+}
+
+.messages .collection-item {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+.bold {
+  font-weight: bold;
+}
+
 .collection.spacing-less {
   margin: 0;
   padding: 0;
 }
 
+.fixed {
+  position: fixed;
+  width: inherit;
+}
+
 .relative {
+  margin: 0 auto;
   position: relative
 }
 
-.float-bottom {
-  position: absolute;
+.bottom {
   bottom: 0;
 }
 
