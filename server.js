@@ -1,5 +1,6 @@
 "use strict";
 
+var fs      = require('fs');
 var path    = require('path');
 var express = require('express');
 var app     = express();
@@ -8,7 +9,9 @@ var io      = require('socket.io')(server);
 
 var Constants = require('./public/app/utils/constants');
 var users = [];
-var rooms = [ 'random' ];
+
+const chatroomsDat = './resources/chatrooms.dat';
+var rooms = fs.readFileSync(chatroomsDat, 'utf8').split('\n').map(r => r.trim().replace(/ +/, '_'));
 
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -28,9 +31,12 @@ const connection = (socket) => {
    * @param  {[String]} roomId  id of the room
    * @return {[Unit]}           effectful void
    */
-  const join = (roomId) => {
-    console.log(roomId);
+  const join = (roomId, user) => {
+    socket.broadcast.emit(Constants.leave, roomId, user);
+
     socket.join(roomId);
+
+    socket.broadcast.to(roomId).emit(Constants.greet, user);
   };
 
   /**
@@ -39,9 +45,10 @@ const connection = (socket) => {
    * @param  {[String]} roomId  id of the room
    * @return {[Unit]}           effectful void
    */
-  const leave = (roomId) => {
-    console.log(roomId);
+  const leave = (roomId, user) => {
     socket.leave(roomId);
+
+    socket.broadcast.to(roomId).emit(Constants.grieve, user);
   };
 
   /**
@@ -50,13 +57,8 @@ const connection = (socket) => {
    * @param  {[Object]}   data  message information
    * @return {[Unit]}     effectful void
    */
-  const send = (data) => {
-    console.log(data);
-    
-    socket.to(data.room).emit(Constants.message, {
-      message: data.message,
-      timestamp: Date.now()
-    });
+  const send = (data) => {    
+    socket.broadcast.to(data.room).emit(Constants.message, Object.assign(data, { timestamp: Date.now() }));
   };
 
   /**
@@ -66,8 +68,6 @@ const connection = (socket) => {
    */
   const userEnter = (user) => {
     users.push(user);
-    console.log("User Logged In");
-
     socket.broadcast.emit(Constants.userUpdate, users);
   }
 
@@ -77,10 +77,32 @@ const connection = (socket) => {
    * @return  {[Unit]}          effectful void
    */
   const userLeave = (user) => {
-    console.log("User Logged Out");
-
     users = users.filter(u => u.id != user.id);
     socket.broadcast.emit(Constants.userUpdate, users);
+  }
+
+  /**
+   * Allows client to create a chatroom
+   * @param  {[String]} room  name of the room
+   * @return {[Unit]}         effectful void
+   */
+  const chatroomCreate = (room) => {
+    rooms.push(room);    
+    fs.writeFileSync(chatroomsDat, rooms.join('\n'));
+    socket.emit(Constants.roomUpdate, rooms)
+  }
+
+  /**
+   * Allows client to delete a chatroom
+   * @param  {[String]} room  name of the room
+   * @return {[Unit]}         effectful void
+   */
+  const chatroomDelete = (room) => {
+    const roomIdx = rooms.indexOf(room);
+    rooms.splice(roomIdx, 1);
+
+    fs.writeFileSync(chatroomsDat, rooms.join('\n'));
+    socket.emit(Constants.roomUpdate, rooms)
   }
 
   // Adding listeners
@@ -89,9 +111,12 @@ const connection = (socket) => {
     .on(Constants.join, join)
     .on(Constants.leave, leave)
     .on(Constants.userEnter, userEnter)
-    .on(Constants.userLeave, userLeave);
+    .on(Constants.userLeave, userLeave)
+    .on(Constants.chatroomCreate, chatroomCreate)
+    .on(Constants.chatroomDelete, chatroomDelete);
 
-  // Set up actions
+
+  // Set up defaults
   socket
     .emit(Constants.userUpdate, users)
     .emit(Constants.roomUpdate, rooms);
