@@ -10,5 +10,10 @@ module.exports = ({
   appModule: 'app',
   appContainer: 'app-container',
   userEnter: 'userEnter',
-  userLeave: 'userLeave'
+  userLeave: 'userLeave',
+  chatroomCreate: 'chatroomCreate',
+  chatroomDelete: 'chatroomDelete',
+  components: 'components',
+  greet: 'greet',
+  grieve: 'grieve',
 });
