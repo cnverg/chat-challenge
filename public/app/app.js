@@ -1,16 +1,16 @@
+import './app.css!';
 import 'angular-aria';
 import 'angular-animate';
 import 'angular-cookies';
 import 'angular-material';
 import 'angular-ui-router';
 import 'dogfalo/materialize';
-import './app.css!';
 
 import angular from 'angular';
 import AppConfig from './app.config';
-import * as Factories from './app.factory';
 import Constants from './utils/constants';
 import AppComponent from './app.component';
+import * as Factories from './app.factory';
 
 const appModule = angular
   .module(Constants.appModule, ['ngMaterial', 'ngCookies', 'ui.router'])
