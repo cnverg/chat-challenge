@@ -1,5 +1,14 @@
-const _compose = (f, g) => (...xs) => f(g(...xs));
+const _compose = function(f, g) {
+  return function() {
+    const xs = [].slice.call(arguments, 0);
+    return f(g.apply(g, xs));
+  }
+};
 
-export function compose (f, ...gs) {
+function compose (f) {
+  const gs = [].slice.call(arguments, 1);
   return gs.reduce(_compose, f);
-}
+};
+
+module.exports = { compose: compose };
+

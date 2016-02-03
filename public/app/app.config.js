@@ -5,7 +5,7 @@ import { Inject } from './utils/decorators';
 import chatroomConfigBuilder from './components/chatroom/chatroom.config';
 
 const appConfig = ($provide, $stateProvider, $urlRouterProvider) => {
-  const socket = io.connect('http://localhost:3000');
+  const socket = io();
 
   $provide.provider('socket', function() {
     this.$get = () => socket;

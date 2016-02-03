@@ -16,4 +16,6 @@ module.exports = ({
   components: 'components',
   greet: 'greet',
   grieve: 'grieve',
+  system: 'system',
+  disconnect: 'disconnect'
 });
