@@ -1,28 +1,27 @@
 import io from 'socket.io/socket.io';
+import { compose } from './utils/helpers';
 import { Inject } from './utils/decorators';
 
+import chatroomConfigBuilder from './components/chatroom/chatroom.config';
+
 const appConfig = ($provide, $stateProvider, $urlRouterProvider) => {
-  const socketSingleton = io();
+  const socket = io.connect('http://localhost:3000');
 
   $provide.provider('socket', function() {
-    this.$get = () => socketSingleton;
+    this.$get = () => socket;
   });
 
   $urlRouterProvider.otherwise('/');
 
-  $stateProvider.state('chat', {
-    url: '/',
-    template: '<app></app>'
-  }).state('chat.create', {
-    url: 'create',
-    template: '<app></app>'
-  }).state('chat.private', {
-    url: 'private/{userId}',
-    template: '<app></app>'
-  }).state('chat.room', {
-    url: 'room/{roomId}',
-    template: '<app></app>'
-  });
+  const chatConfigBuilder = (stateProvider) =>
+    stateProvider.state('chat', {
+      'url': '/',
+      'template': '<app></app>'
+    });
+
+  const chatConfig = compose(chatroomConfigBuilder, chatConfigBuilder);
+
+  chatConfig($stateProvider);
 }
 
 Inject('$provide', '$stateProvider', '$urlRouterProvider')(appConfig);

@@ -1,0 +1,14 @@
+<div class='container relative'>
+  <div class='' data-ng-repeat="message in messages | orderBy:'-'">
+    <span data-ng-bind='message.from.name'></span>
+    <span data-ng-bind='message.content'></span>
+  </div>
+
+  <form name='messageForm' ng-submit='sendMessage()'>
+    <input required type='text' placeholder='Write something nice... If you want to, of course.' data-ng-model='message' />
+
+    <button class="btn" type="submit" data-ng-disabled='messageForm.$invalid'>Send
+      <i class="material-icons right">send</i>
+    </button> 
+  </form>
+</div>
