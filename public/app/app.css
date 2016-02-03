@@ -1,8 +1,28 @@
-.sidenav {
-  position: fixed;
-  height: 100%;
-  width: 300px;
-  left: 0;
+.collection.spacing-less {
+  margin: 0;
+  padding: 0;
+}
+
+.relative {
+  position: relative
+}
+
+.float-bottom {
+  position: absolute;
+  bottom: 0;
+}
+
+.collection.spacing-less li {
+  margin: 0;
+  padding: 0;
+}
+
+.clear {
+  clear: both;
+}
+
+.icon {
+  line-height: 64px;
 }
 
 .clickable {
