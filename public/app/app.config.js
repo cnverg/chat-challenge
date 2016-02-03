@@ -1,4 +1,4 @@
-import io from 'socket.io/socket.io';
+import io from 'socket.io-client';
 import { compose } from './utils/helpers';
 import { Inject } from './utils/decorators';
 
