@@ -2,6 +2,17 @@ body {
   overflow: hidden;
 }
 
+span.imageArea {
+  border-left: 2px solid #039be5;
+  padding-left: 6px;
+  display: block;
+}
+
+span.imageArea a {
+  display: block;
+  margin-bottom: 5px;
+}
+
 .full-width {
   width: 100%;
 }
@@ -26,9 +37,42 @@ body {
   transition: color .3s linear, transform .4s linear;
 }
 
-.messages .collection-item {
+.message-content {
+  flex: 1;
+  display: flex;
+  overflow-y: auto;
+  box-sizing: border-box;
+  height: calc(100% - 61px);
+}
+
+.collection.messages {
+  margin: 0;
+  border: none;
+}
+
+.messages {
+  display: flex;
+  width: inherit;
+  position: fixed;
+  flex-direction: column-reverse;
+  min-height: -webkit-min-content;
+}
+
+.collection.messages .collection-item {
+  border: none;
   margin-bottom: 0;
-  border-bottom: 0;
+  -border-bottom: 1px solid #e0e0e0;
+}
+
+.message-bar {
+  position: absolute;
+  bottom: 15px;
+  left: 5px;
+}
+
+.message-bar input[type='text'] {
+  margin: 0;
+  padding-left: 5px;
 }
 
 .bold {

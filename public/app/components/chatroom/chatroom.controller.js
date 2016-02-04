@@ -1,48 +1,50 @@
-import { Inject } from '../../utils/decorators';
 import Constants from '../../utils/constants';
+import { Inject } from '../../utils/decorators';
+import { compose, lazy, forEach } from '../../utils/helpers';
 
-@Inject('$scope', '$stateParams', 'socket')
+@Inject('$scope', '$stateParams', 'SocketFactory', 'MessagingFactory')
 export default class ClassroomController {
-  constructor($scope, $stateParams, socket) {
-    Object.assign(this, { $scope, socket });
-
+  constructor($scope, $stateParams, SocketFactory, MessagingFactory) {
     $scope.messages = [];
     let mostRecentMessage = {};
     $scope.$parent.selectedTarget = $scope.target = $stateParams.target;
 
-    $scope.addMessage = $scope.messages.push.bind($scope.messages);
+    const scopedSocket = SocketFactory($scope);
+    const messenger = MessagingFactory($scope, $scope.user);
+    Object.assign(this, { $scope, scopedSocket, messenger });
 
-    $scope.processMessage = (message) => {
+    const addMessage = $scope.messages.push.bind($scope.messages);
+
+    const processMessage = (message) => {
       if (mostRecentMessage.from && mostRecentMessage.from.id === message.from.id) {
-        mostRecentMessage.content.push(message.content);
+        mostRecentMessage.content.push(...message.content);
       } else {
-        message.content = message.content.split('\n');
-        $scope.addMessage(message);
-        mostRecentMessage = message;        
+        addMessage(message);
+        mostRecentMessage = message;
       }
     }
 
-    $scope.safeAddMessage = (message) => $scope.$apply(() => $scope.addMessage(message));
-    $scope.safeProcessMessage = (message) => $scope.$apply(() => $scope.processMessage(message));
-
-    socket.on(Constants.greet, $scope.safeAddMessage);
-    socket.on(Constants.grieve, $scope.safeAddMessage);
-    socket.on(Constants.message, $scope.safeProcessMessage);
-
-    socket.emit(Constants.join, $scope.target);
-
-    $scope.$on('$destroy', () => {
-      socket.emit(Constants.leave, $scope.target);
-    });
+    scopedSocket
+      .on(Constants.greet, (m) => {
+        addMessage(m);
+      })
+      .on(Constants.grieve, (m) => {
+        addMessage(m);
+      })
+      .on(Constants.message, (m) => {
+        processMessage(m);
+      })
+      .on(Constants.bulkMessageUpdate, (ms) => {
+        forEach(processMessage)(ms);
+      })
+      .emit(Constants.join, $scope.target, $scope.user)
+      .emit(Constants.refreshMessages, $scope.target);
 
     $scope.sendMessage = this.sendMessage.bind(this);
   }
 
   sendMessage() {
-    const msg = { room: this.$scope.target, from: this.$scope.user, content: this.$scope.message, timestamp: Date.now() };
-    this.socket.emit(Constants.send, msg);
-
-    this.$scope.processMessage(msg);
+    this.messenger.send(this.$scope.target, this.$scope.message);
 
     this.$scope.message = ''
     this.$scope.messageForm.$setPristine();
