@@ -74,7 +74,7 @@ const connection = function(socket) {
     const userEnter = (user) => {
       _user = user;
       users.push(user);
-      socket.broadcast.emit(Constants.userUpdate, users);
+      userUpdate();
     }
 
     /**
@@ -85,7 +85,15 @@ const connection = function(socket) {
     const userLeave = (user) => {
       _user = {};
       users = users.filter(u => u.id != user.id);
-      socket.broadcast.emit(Constants.userUpdate, users);
+      userUpdate();
+    }
+
+    /**
+     * Updates user list in all sockets
+     * @return {[Unit]} effectful void
+     */
+    const userUpdate = () => {
+      io.sockets.emit(Constants.userUpdate, users);
     }
 
     /**
@@ -97,7 +105,7 @@ const connection = function(socket) {
       fs.writeFileSync(chatroomsDat, rooms.concat([room]).join('\n'));
 
       rooms = getChatroomData();
-      io.sockets.emit(Constants.roomUpdate, rooms)
+      roomUpdate();
     }
 
     /**
@@ -109,7 +117,15 @@ const connection = function(socket) {
       writeToChatroomData(rooms.filter(r => r !== room).join('\n'));
 
       rooms = getChatroomData();
-      io.sockets.emit(Constants.roomUpdate, rooms)
+      roomUpdate();
+    }
+
+    /**
+     * Updates room list in all sockets
+     * @return {[Unit]} effectful void
+     */
+    const roomUpdate = () => {
+      io.sockets.emit(Constants.roomUpdate, rooms);
     }
 
     /**
@@ -130,13 +146,9 @@ const connection = function(socket) {
       .on(Constants.userLeave, userLeave)
       .on(Constants.disconnect, disconnect)
       .on(Constants.chatroomCreate, chatroomCreate)
-      .on(Constants.chatroomDelete, chatroomDelete);
-
-
-    // Set up defaults
-    socket
-      .emit(Constants.userUpdate, users)
-      .emit(Constants.roomUpdate, rooms);
+      .on(Constants.chatroomDelete, chatroomDelete)
+      .on(Constants.refreshUsers, userUpdate)
+      .on(Constants.refreshRooms, roomUpdate);
   })();
 }
 

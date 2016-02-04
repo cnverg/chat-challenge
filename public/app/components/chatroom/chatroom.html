@@ -1,5 +1,5 @@
-<div class='relative'>
-  <div class='collection messages'>
+<div class='relative full-height'>
+  <div class='collection messages' style='height: calc(100% - 61px)'>
     <div class='collection-item' data-ng-class="{ 'avatar': !message.fromSystem }"  data-ng-repeat='message in messages'>
       <div data-ng-if='message.fromSystem'>
         <span data-ng-bind='::message.content'></span>
@@ -16,11 +16,11 @@
     </div>
   </div>
 
-  <div class='fixed bottom'>
+  <div class='full-width' style='position: absolute; bottom: 0;'>
     <div class='relative'>
-      <form class='col s12' name='messageForm' ng-submit='sendMessage()'>
+      <form name='messageForm' ng-submit='sendMessage()'>
         <input required type='text' placeholder='Write something nice... If you want to, of course.' data-ng-model='message' />
-        <i data-ng-click='sendMessage()' data-ng-class="{ 'visible' : messageForm.$valid }" class='send-icon material-icons'>send</i>
+        <i data-ng-click='sendMessage()' data-ng-class="{ 'visible' : messageForm.$valid }" class='send-icon material-icons clickable'>send</i>
       </form>      
     </div>
   </div>

@@ -7,15 +7,18 @@ import 'angular-ui-router';
 import 'dogfalo/materialize';
 
 import angular from 'angular';
+import AppRun from './app.run';
 import AppConfig from './app.config';
 import Constants from './utils/constants';
-import AppComponent from './app.component';
 import * as Factories from './app.factory';
 
+import PreBootstrapLoaderComponent from './components/preBootstrapLoader/pre-bootstrap-loader.component';
+
 const appModule = angular
-  .module(Constants.appModule, ['ngMaterial', 'ngCookies', 'ui.router'])
-  .directive(Constants.appModule, AppComponent)
-  .config(AppConfig);
+  .module(Constants.appModule, ['ngAnimate', 'ngMaterial', 'ngCookies', 'ui.router'])
+  .directive(Constants.preBootstrapLoader, PreBootstrapLoaderComponent)
+  .config(AppConfig)
+  .run(AppRun);
 
 for (let factoryName in Factories) {
   appModule.factory(factoryName, Factories[factoryName]);  

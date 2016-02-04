@@ -1,3 +1,15 @@
+body {
+  overflow: hidden;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.full-height {
+  height: 100%;
+}
+
 .send-icon.visible {
   color: #26a69a;
   transform: scaleY(1);
@@ -34,7 +46,6 @@
 }
 
 .relative {
-  margin: 0 auto;
   position: relative
 }
 

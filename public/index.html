@@ -7,7 +7,66 @@
   </head>
   <body>
 
-    <div data-ui-view></div>
+    <div class='pre-bootstrap-loader' ng-animate-children>
+      <style type="text/css">
+        div.loading-container {
+          position: fixed;
+        }
+
+        div.pre-bootstrap-loader div.animated-container {
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          opacity: 1;
+          z-index: 9999;
+          position: fixed;
+          background-color: #EEE;
+        }
+
+        div.pre-bootstrap-loader div.animated-container.ng-leave {
+          opacity: 1;
+          transition: all linear 200ms;
+          -webkit-transition: all linear 200ms;
+        }
+
+        div.pre-bootstrap-loader div.animated-container.ng-leave-active {
+          opacity: 0;
+        }
+
+        div.pre-bootstrap-loader div.content {
+          left: 0;
+          right: 0;
+          color: #26a69a;
+          margin-top: -37px;
+          position: absolute;
+          text-align: center;
+          top: calc(50% - 37px);
+          font-family: GillSans, Calibri, Trebuchet, sans-serif;
+        }
+
+        div.pre-bootstrap-loader p {
+          font-size: 18px ;
+          line-height: 14px ;
+          margin: 0px 0px 0px 0px ;
+        }
+
+      </style>
+
+      <div class='animated-container ng-leave'>
+        <div class="row container content">
+
+          <div class="progress">
+            <div class="indeterminate"></div>
+          </div>
+
+          <p> Woah! Hold your horses, we're not ready yet. </p>
+          <p> This should only take a few seconds. </p>
+        </div>
+      </div>
+    </div>
+
+    <div class='full-width full-height' data-ui-view></div>
 
     <script type="text/javascript" src="jspm_packages/system.js"></script>
     <script type="text/javascript" src="config.js"></script>
