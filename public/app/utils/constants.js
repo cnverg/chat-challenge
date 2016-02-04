@@ -20,5 +20,7 @@ module.exports = ({
   disconnect: 'disconnect',
   preBootstrapLoader: 'preBootstrapLoader',
   refreshUsers: 'refreshUsers',
-  refreshRooms: 'refreshRooms'
+  refreshRooms: 'refreshRooms',
+  refreshMessages: 'refreshMessages',
+  bulkMessageUpdate: 'bulkMessageUpdate'
 });

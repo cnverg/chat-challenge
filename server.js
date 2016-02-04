@@ -18,6 +18,7 @@ const format = (str) => str.split('\n').map(r => r.trim().replace(/ +/g, '_'));
 const getChatroomData = compose(format, fs.readFileSync.bind(fs, chatroomsDat, 'utf8'));
 const writeToChatroomData = fs.writeFileSync.bind(fs, chatroomsDat);
 
+let roomCache = {};
 var rooms = getChatroomData();
 
 app.use(express.static(path.join(__dirname, '/public')));
@@ -33,16 +34,19 @@ const connection = function(socket) {
   // Returning IIFE to have private cache for each socket
   return (function() {
     let _user = {};
-    let _rooms = [];
+    let _sessionRoom = '';
     /**
      * Allows the client to join a specified room
      * @param  {[String]} roomId  id of the room
      * @return {[Unit]}           effectful void
      */
     const join = (roomId, user) => {
+      _user = user;
       socket.join(roomId);
-      _rooms.push(roomId);
-      socket.broadcast.to(roomId).emit(Constants.grieve, Object.assign({}, server, { content: `${_user.name} connected`, timestamp: Date.now() }));
+
+      _sessionRoom = roomId;
+      roomCache[roomId] = roomCache[roomId] || [];
+      socket.broadcast.to(roomId).emit(Constants.grieve, Object.assign({}, server, { content: `${user.name} connected`, timestamp: Date.now() }));
     };
 
     /**
@@ -51,9 +55,8 @@ const connection = function(socket) {
      * @return {[Unit]}           effectful void
      */
     const leave = (roomId, user) => {
+      _sessionRoom = '';
       socket.leave(roomId);
-      _rooms.splice(_rooms.indexOf(roomId), 1);
-      socket.broadcast.to(roomId).emit(Constants.grieve, Object.assign({}, server, { content: `${_user.name} disconnected`, timestamp: Date.now() }));
     };
 
     /**
@@ -63,7 +66,10 @@ const connection = function(socket) {
      * @return {[Unit]}     effectful void
      */
     const send = (data) => {
-      socket.broadcast.to(data.room).emit(Constants.message, { from: data.from, content: data.content, timestamp: data.timestamp });
+      const message = Object.assign({}, data, { timestamp: Date.now(), room: undefined });
+
+      io.sockets.in(data.room).emit(Constants.message, message);
+      roomCache[data.room].push(message);
     };
 
     /**
@@ -72,7 +78,6 @@ const connection = function(socket) {
      * @return  {[Unit]}          effectful void
      */
     const userEnter = (user) => {
-      _user = user;
       users.push(user);
       userUpdate();
     }
@@ -83,9 +88,10 @@ const connection = function(socket) {
      * @return  {[Unit]}          effectful void
      */
     const userLeave = (user) => {
-      _user = {};
       users = users.filter(u => u.id != user.id);
       userUpdate();
+
+      _user = {};
     }
 
     /**
@@ -129,12 +135,25 @@ const connection = function(socket) {
     }
 
     /**
+     * Updates messages of the client from the server cache
+     * @param   {[String]}  target  chat Room / private Chat
+     * @return  {[Unit]}            effectful void
+     */
+    const messageUpdate = (target) => {
+      io.to(socket.id).emit(Constants.bulkMessageUpdate, roomCache[target]);
+    }
+
+    /**
      * Allows client to disconnect from the application
      * @return  {[Unit]}  effectful void
      */
     const disconnect = () => {
-      _rooms.forEach(r => leave(r, _user));
+      socket.broadcast.to(_sessionRoom).emit(Constants.grieve, Object.assign({}, server, {
+        content: `${_user.name} disconnected`, timestamp: Date.now()
+      }));
+
       userLeave(_user);
+      leave(_sessionRoom, _user);
     }
 
     // Adding listeners
@@ -147,8 +166,9 @@ const connection = function(socket) {
       .on(Constants.disconnect, disconnect)
       .on(Constants.chatroomCreate, chatroomCreate)
       .on(Constants.chatroomDelete, chatroomDelete)
-      .on(Constants.refreshUsers, userUpdate)
-      .on(Constants.refreshRooms, roomUpdate);
+      .on(Constants.refreshUsers, userEnter)
+      .on(Constants.refreshRooms, roomUpdate)
+      .on(Constants.refreshMessages, messageUpdate);
   })();
 }
 

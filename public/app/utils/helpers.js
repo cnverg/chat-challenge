@@ -26,5 +26,24 @@ function id(x) {
   return x;
 }
 
-module.exports = { compose: compose, apply: apply, first: first };
+function forEach(apply) {
+  return function each(collection) {
+    collection.forEach(apply);
+  }
+}
+
+function lazy(f) {
+  const xs = [].slice.call(arguments, 1);
+
+  return function() {
+    const ys = [].slice.call(arguments, 0);
+
+    return function() {
+      const zs = [].slice.call(arguments, 0);
+      f.apply(f, xs.concat(ys).concat(zs));
+    }
+  }
+}
+
+module.exports = { compose: compose, apply: apply, first: first, forEach: forEach, lazy: lazy };
 
