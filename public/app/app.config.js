@@ -2,6 +2,10 @@ import io from 'socket.io-client';
 import { compose } from './utils/helpers';
 import { Inject } from './utils/decorators';
 
+import template from './app.html!text';
+import controller from './app.controller';
+
+import authConfigBuilder from './components/auth/auth.config';
 import chatroomConfigBuilder from './components/chatroom/chatroom.config';
 
 const appConfig = ($provide, $stateProvider, $urlRouterProvider) => {
@@ -15,11 +19,12 @@ const appConfig = ($provide, $stateProvider, $urlRouterProvider) => {
 
   const chatConfigBuilder = (stateProvider) =>
     stateProvider.state('chat', {
+      template,
+      controller,
       'url': '/',
-      'template': '<app></app>'
     });
 
-  const chatConfig = compose(chatroomConfigBuilder, chatConfigBuilder);
+  const chatConfig = compose(chatroomConfigBuilder, chatConfigBuilder, authConfigBuilder);
 
   chatConfig($stateProvider);
 }

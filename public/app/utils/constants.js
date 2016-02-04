@@ -17,5 +17,8 @@ module.exports = ({
   greet: 'greet',
   grieve: 'grieve',
   system: 'system',
-  disconnect: 'disconnect'
+  disconnect: 'disconnect',
+  preBootstrapLoader: 'preBootstrapLoader',
+  refreshUsers: 'refreshUsers',
+  refreshRooms: 'refreshRooms'
 });

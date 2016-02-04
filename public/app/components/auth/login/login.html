@@ -1,0 +1,12 @@
+<div class='row container'>
+  <form name='loginForm' ng-submit='login(username, email)'>
+    <h2>What should we call you?</h2>
+
+    <input required id='username' name='username' type='text' placeholder='Introduce your Display Name' data-ng-model='username' />
+    <input id='email' name='email' type='text' placeholder='Introduce your Email Address (Optional)' data-ng-model='email' />
+
+    <button class="btn" type="submit" data-ng-disabled='loginForm.$invalid'>Login
+      <i class="material-icons right">send</i>
+    </button>
+  </form>
+</div>
