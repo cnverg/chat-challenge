@@ -2,6 +2,7 @@ import './app.css!';
 import 'angular-aria';
 import 'angular-animate';
 import 'angular-cookies';
+import 'angular-resource';
 import 'angular-material';
 import 'angular-ui-router';
 import 'dogfalo/materialize';
@@ -15,7 +16,7 @@ import * as Factories from './app.factory';
 import PreBootstrapLoaderComponent from './components/preBootstrapLoader/pre-bootstrap-loader.component';
 
 const appModule = angular
-  .module(Constants.appModule, ['ngAnimate', 'ngMaterial', 'ngCookies', 'ui.router'])
+  .module(Constants.appModule, ['ngResource', 'ngAnimate', 'ngMaterial', 'ngCookies', 'ui.router'])
   .directive(Constants.preBootstrapLoader, PreBootstrapLoaderComponent)
   .config(AppConfig)
   .run(AppRun);
@@ -33,7 +34,7 @@ angular.element(document).ready(() => {
     System.trace = true;
     noAngularDom = container.cloneNode(true);
   }
-
+  
   angular.bootstrap(container, [appModule.name], {
     strictDi: true
   });

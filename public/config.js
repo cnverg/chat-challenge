@@ -20,6 +20,7 @@ System.config({
     "angular-aria": "github:angular/bower-angular-aria@1.4.9",
     "angular-cookies": "github:angular/bower-angular-cookies@1.4.9",
     "angular-material": "github:angular/bower-material@1.0.4",
+    "angular-resource": "github:angular/bower-angular-resource@1.4.9",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.17",
     "babel": "npm:babel-core@5.8.35",
     "babel-runtime": "npm:babel-runtime@5.8.35",
@@ -40,6 +41,9 @@ System.config({
       "angular": "github:angular/bower-angular@1.4.9"
     },
     "github:angular/bower-angular-cookies@1.4.9": {
+      "angular": "github:angular/bower-angular@1.4.9"
+    },
+    "github:angular/bower-angular-resource@1.4.9": {
       "angular": "github:angular/bower-angular@1.4.9"
     },
     "github:angular/bower-material@1.0.4": {

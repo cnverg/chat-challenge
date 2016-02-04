@@ -8,7 +8,7 @@ export default class AppController {
     $scope.selectedTarget = '';
     $scope.user = UserFactory.get();
 
-    socket.emit(Constants.refreshUsers);
+    socket.emit(Constants.refreshUsers, $scope.user);
     socket.emit(Constants.refreshRooms);
 
     socket.on(Constants.userUpdate, (users) => {
