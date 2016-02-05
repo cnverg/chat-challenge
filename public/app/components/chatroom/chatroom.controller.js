@@ -9,11 +9,14 @@ export default class ChatroomController {
     let mostRecentMessage = {};
     $scope.$parent.selectedTarget = $scope.target = $stateParams.target;
 
-    const scopedSocket = SocketFactory();
+    const scopedSocket = SocketFactory(); 
     const messenger = MessagingFactory($scope.user);
     Object.assign(this, { $scope, scopedSocket, messenger });
 
-    const addMessage = $scope.messages.push.bind($scope.messages);
+    const addMessage = (message) => {
+      mostRecentMessage = {};
+      $scope.messages.push(message);
+    };
 
     const processMessage = (message) => {
       if (mostRecentMessage.from && mostRecentMessage.from.id === message.from.id) {
