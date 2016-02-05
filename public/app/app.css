@@ -1,0 +1,145 @@
+body {
+  overflow: hidden;
+}
+
+span.imageArea {
+  border-left: 2px solid #039be5;
+  padding-left: 6px;
+  display: block;
+}
+
+span.imageArea a {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.notification {
+  opacity: 0;
+
+  -transition: opacity 500ms linear;
+}
+
+.notification.accent {
+  color: #A62633;
+  
+  -webkit-animation: blink 2s infinite;
+          animation: blink 2s infinite;
+}
+
+@-webkit-keyframes blink {
+    0% { opacity: 0; }
+   50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes blink {
+    0% { opacity: 0; }
+   50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.send-icon.visible {
+  color: #26a69a;
+  transform: scaleY(1);
+}
+
+.send-icon {
+  right: 0;
+  top: 14px;
+  position: absolute;
+
+  color: #000000;
+  transform: scaleY(0);
+
+  transition: color .3s linear, transform .4s linear;
+}
+
+.message-content {
+  flex: 1;
+  display: flex;
+  overflow-y: auto;
+  box-sizing: border-box;
+  height: calc(100% - 61px);
+}
+
+.collection.messages {
+  margin: 0;
+  border: none;
+}
+
+.messages {
+  display: flex;
+  width: inherit;
+  position: fixed;
+  flex-direction: column-reverse;
+  min-height: -webkit-min-content;
+}
+
+.collection.messages .collection-item {
+  border: none;
+  margin-bottom: 0;
+  -border-bottom: 1px solid #e0e0e0;
+}
+
+.message-bar {
+  position: absolute;
+  bottom: 15px;
+  left: 5px;
+}
+
+.message-bar input[type='text'] {
+  margin: 0;
+  padding-left: 5px;
+}
+
+.system-message {
+  font-style: italic;
+  color: #999999;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.collection.spacing-less {
+  margin: 0;
+  padding: 0;
+}
+
+.fixed {
+  position: fixed;
+  width: inherit;
+}
+
+.relative {
+  position: relative
+}
+
+.bottom {
+  bottom: 0;
+}
+
+.collection.spacing-less li {
+  margin: 0;
+  padding: 0;
+}
+
+.clear {
+  clear: both;
+}
+
+.icon {
+  line-height: 64px;
+}
+
+.clickable {
+  cursor: pointer;
+}

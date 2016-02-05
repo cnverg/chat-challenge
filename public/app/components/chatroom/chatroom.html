@@ -1,0 +1,40 @@
+<div class='relative full-height' ng-mousemove='clearMessages()'>
+  <div id='message-content' class='relative message-content full-width'>
+    <div class='collection messages full-height'>
+      <div ng-if='writing' data-ng-bind=''></div>
+      <div>
+        <div class='collection-item message' data-ng-class="{ 'avatar': !message.fromSystem }"  data-ng-repeat='message in messages track by $index'>
+          <div class='system-message' data-ng-if='message.fromSystem'>
+            <span data-ng-bind='::message.content'></span>
+            <span class='right' data-ng-bind="::message.timestamp | date:'hh:mma'"></span>
+          </div>
+
+          <div data-ng-if='!message.fromSystem'>
+            <span class='right' data-ng-bind="::message.timestamp | date:'hh:mma'"></span>
+            <img class='left responsive-img circle' data-ng-src='{{ ::message.from.avatarUrl }}' />
+
+            <span class='clear title bold' data-ng-bind='::message.from.name'></span>
+
+            <p data-ng-repeat='content in message.content track by $index'>
+              <text data-ng-bind='::content.text'></text>
+
+              <span data-ng-if='content.imageData' class='imageArea'>
+                <a target='_blank' data-ng-href='{{ ::content.imageData.sourceUrl }}' data-ng-bind='::content.imageData.name'></a>
+                <img data-ng-src='{{ ::content.imageData.imageUrl }}' />
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class='full-width message-bar'>
+    <div class='relative'>
+      <form name='messageForm' ng-submit='sendMessage()' class="z-depth-2">
+        <input required type='text' placeholder='Write something nice... If you want to, of course.' data-ng-model='message' />
+        <i data-ng-click='sendMessage()' data-ng-class="{ 'visible' : messageForm.$valid }" class='send-icon material-icons clickable'>send</i>
+      </form>      
+    </div>
+  </div>
+</div>

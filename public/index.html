@@ -1,50 +1,208 @@
 <!doctype html>
-<html>
+<html id="app-container">
   <head>
-
-    <script src="/socket.io/socket.io.js"></script>
-
-    <script>
-
-      var socket = io();
-
-      //
-      // Handle an incoming message
-      //
-      socket.on('message', function (data) {
-        console.log(data);
-      });
-
-      //
-      // Join a room
-      //
-      function join(room) {
-        socket.emit('join', room);
-      }
-
-      //
-      // Leave a room
-      //
-      function leave(room) {
-        socket.emit('leave', room);
-      }
-
-      //
-      // Send a message
-      //
-      function send(room, message) {
-        socket.emit('send', {
-          room: room,
-          message: message
-        });
-      }
-
-    </script>
-
+    <title>Chat App</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.2/angular-material.min.css">
   </head>
   <body>
-    <button onclick="join('test')">Join</button>
-    <button onclick="leave('test')">Leave</button>
-    <button onclick="send('test', 'hello')">Send</button>
+
+    <div class='pre-bootstrap-loader' ng-animate-children>
+      <!--
+        Some dark sorcery to have a pre-bootstrap loading screen.
+        
+        Taking advantage of the fact that ng-animate-children works
+        while app is not bootstrapped, and, a directive that removes
+        the element it was called from when it's loaded.
+      -->
+
+      <style type="text/css">
+        div.loading-container {
+          position: fixed;
+        }
+
+        div.pre-bootstrap-loader div.animated-container {
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          opacity: 1;
+          z-index: 9999;
+          position: fixed;
+          background-color: #EEE;
+        }
+
+        div.pre-bootstrap-loader div.animated-container.ng-leave {
+          opacity: 1;
+          transition: all linear 200ms;
+          -webkit-transition: all linear 200ms;
+        }
+
+        div.pre-bootstrap-loader div.animated-container.ng-leave-active {
+          opacity: 0;
+        }
+
+        div.pre-bootstrap-loader div.content {
+          left: 0;
+          right: 0;
+          color: #26a69a;
+          margin-top: -37px;
+          position: absolute;
+          text-align: center;
+          top: calc(50% - 37px);
+          font-family: GillSans, Calibri, Trebuchet, sans-serif;
+        }
+
+        div.pre-bootstrap-loader p {
+          font-size: 18px ;
+          line-height: 14px ;
+          margin: 0px 0px 0px 0px ;
+        }
+
+        /**
+         * Taken from Materialize-CSS so the progress bar
+         * appears all the time, not only after the style
+         * was loaded by jspm, should be removed on
+         * application bootstrap
+         */
+        .container {
+          margin: 0 auto;
+          max-width: 1280px;
+          width: 90%;
+        }
+        
+        .progress {
+          position: relative;
+          height: 4px;
+          display: block;
+          width: 100%;
+          background-color: #acece6;
+          border-radius: 2px;
+          margin: 0.5rem 0 1rem 0;
+          overflow: hidden;
+        }
+
+        .progress .determinate {
+          position: absolute;
+          background-color: inherit;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          background-color: #26a69a;
+          transition: width .3s linear;
+        }
+
+        .progress .indeterminate {
+          background-color: #26a69a;
+        }
+
+        .progress .indeterminate:before {
+          content: '';
+          position: absolute;
+          background-color: inherit;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          will-change: left, right;
+          -webkit-animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+                  animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+        }
+
+        .progress .indeterminate:after {
+          content: '';
+          position: absolute;
+          background-color: inherit;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          will-change: left, right;
+          -webkit-animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+                  animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+          -webkit-animation-delay: 1.15s;
+                  animation-delay: 1.15s;
+        }
+
+        @-webkit-keyframes indeterminate {
+          0% {
+            left: -35%;
+            right: 100%;
+          }
+          60% {
+            left: 100%;
+            right: -90%;
+          }
+          100% {
+            left: 100%;
+            right: -90%;
+          }
+        }
+
+        @keyframes indeterminate {
+          0% {
+            left: -35%;
+            right: 100%;
+          }
+          60% {
+            left: 100%;
+            right: -90%;
+          }
+          100% {
+            left: 100%;
+            right: -90%;
+          }
+        }
+
+        @-webkit-keyframes indeterminate-short {
+          0% {
+            left: -200%;
+            right: 100%;
+          }
+          60% {
+            left: 107%;
+            right: -8%;
+          }
+          100% {
+            left: 107%;
+            right: -8%;
+          }
+        }
+
+        @keyframes indeterminate-short {
+          0% {
+            left: -200%;
+            right: 100%;
+          }
+          60% {
+            left: 107%;
+            right: -8%;
+          }
+          100% {
+            left: 107%;
+            right: -8%;
+          }
+        }
+
+      </style>
+
+      <div class='animated-container ng-leave'>
+        <div class="row container content">
+
+          <div class="progress">
+            <div class="indeterminate"></div>
+          </div>
+
+          <p> Woah! Hold your horses, we're not ready yet. </p>
+          <p> This should only take a few seconds. </p>
+        </div>
+      </div>
+    </div>
+
+    <div class='full-width full-height' data-ui-view></div>
+
+    <script type="text/javascript" src="jspm_packages/system.js"></script>
+    <script type="text/javascript" src="config.js"></script>
+    <script>
+      System.import('app/app').catch(console.error.bind(console));
+    </script>
   </body>
 </html>

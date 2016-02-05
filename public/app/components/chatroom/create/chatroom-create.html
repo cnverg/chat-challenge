@@ -1,0 +1,9 @@
+<form class='row container' name='chatroomCreationForm' ng-submit='createChatroom()'>
+  <h2>Chatroom Creation</h2>
+
+  <input required id='chatroom' name='chatroom' type='text' placeholder='Introduce chatroom name' data-ng-model='chatroom' />
+
+  <button class="btn" type="submit" data-ng-disabled='chatroomCreationForm.$invalid'>Create
+    <i class="material-icons right">send</i>
+  </button>
+</form>

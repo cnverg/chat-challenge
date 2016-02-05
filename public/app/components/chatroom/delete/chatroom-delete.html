@@ -1,0 +1,12 @@
+<form class='row container' name='chatroomDeletionForm' ng-submit='deleteChatroom()'>
+  <h2>Delete {{ chatroom }}?</h2>
+
+  <p>
+    <input id='deletionRequested' name='deletionRequested' type='checkbox' class='filled-in' data-ng-model='deletionRequested'/>
+    <label for='deletionRequested'>Yes.</label>
+  </p>
+
+  <button class="btn" type="submit" data-ng-disabled='!deletionRequested'>Delete
+    <i class="material-icons right">send</i>
+  </button>
+</form>
