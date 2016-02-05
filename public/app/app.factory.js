@@ -104,32 +104,35 @@ const GiphyFactory = ($resource) => {
 
 const MessagingFactory = (SocketFactory, GiphyFactory) => {
   const commands = [
-    'giphy'
+    'giphy', 'g'
   ];
 
-  return function(scope, user) {
-    const scopedSocket = SocketFactory(scope);
+  return function( user) {
+    const scopedSocket = SocketFactory();
 
-    const match = ({ command, text }) => (content) => {
-      const cmds = commands.map(c => `^\/(${c}) (.+)`);
-      const commandExpression = new RegExp(cmds.join('|'));
+    const matchMessageType = ({ command, text }) => (content) => {
+      const cmdPatterns = commands.map(c => new RegExp(`^\/(${c}) (.+)`));
 
-      if (commandExpression.test(content)) {
-        const [cmd, args] = content.match(commandExpression).slice(1);
-        return command(cmd, args)
-      } else {
-        return text(content);
+      for (let pattern of cmdPatterns) {
+        if (pattern.test(content)) {
+          const [cmd, args] = content.match(pattern).slice(1);
+          return command(cmd, args);
+        }
       }
+
+      return text(content);
     };
 
     const handleCommand = (command, content) => {
       switch(command) {
-        case 'giphy':
+        case 'giphy': case 'g':
           return GiphyFactory.single(content).then(({ data }) => {
             const imageUrl = data.fixed_height_downsampled_url;
             const sourceUrl = data.url;
 
-            return { imageData: { imageUrl, sourceUrl, name: content } };
+            return imageUrl && sourceUrl
+              ? { imageData: { imageUrl, sourceUrl, name: content } }
+              : { status: 404 };
           });
         default:
           throw Error(`Invalid command ${command}`);
@@ -139,10 +142,10 @@ const MessagingFactory = (SocketFactory, GiphyFactory) => {
     return {
       send(room, message) {
         const handleText = (text) => new Promise((resolve) => resolve({ text }));
-        const pipeline = match({ text: handleText, command: handleCommand });
+        const pipeline = matchMessageType({ text: handleText, command: handleCommand });
 
-        return pipeline(message).then(({ text, imageData }) => {
-          scopedSocket.emit(Constants.send, Object.assign({}, { content: [{ text: message, imageData }], from: user, room }))
+        return pipeline(message).then(({ text, imageData, status = 200 }) => {
+          scopedSocket.emit(Constants.send, Object.assign({}, { content: [{ text: message, imageData }], from: user, room, status }))
         });
       }
     };
