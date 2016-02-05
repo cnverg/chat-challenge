@@ -40,39 +40,51 @@ function UserFactory(socket, $cookies) {
   };
 }
 
-const SocketFactory = () => {
+const SocketFactory = (socket, $rootScope) => {
   class ScopedSocket {
-    constructor(socket, scope) {
-      Object.assign(this, { socket, scope, listeners: [] });
+    constructor(scope) {
+      Object.assign(this, { scope, listeners: [] });
     }
 
     removeAllListeners() {
       this.listeners.forEach(listener => {
-        this.socket.removeListener(listener.event, listener.fn);
+        this.removeListener(listener.event);
       });
+
+      this.listeners = [];
+    }
+
+    removeListener(evt) {
+      const listener = this.listeners.filter(({ event }) => event == evt)[0];
+
+      if (listener) {
+        socket.removeListener(listener.event, listener.fn);
+        this.listeners.splice(this.listeners.indexOf(listener), 1);
+      }
     }
 
     on(event, callback) {
+      if (this.listeners.some(listener => listener.event === event))
+        this.removeListener(event);
+
       const $scope = this.scope;
       const fn = compose($scope.$apply.bind($scope), lazy(callback));
 
       this.listeners.push({ event, fn });
-      this.socket.on(event, fn);
+      socket.on(event, fn);
 
       return this;
     }
 
     emit(event, ...args) {
-      this.socket.emit(event, ...args);
+      socket.emit(event, ...args);
       return this;
     }
   }
 
-  const socket = io.connect();
+  const scopedSocket = new ScopedSocket($rootScope);
 
-  return function(scope) {
-    const scopedSocket = new ScopedSocket(socket, scope);
-    scope.$on('$destroy', scopedSocket.removeAllListeners.bind(scopedSocket));
+  return function() {
     return scopedSocket;
   }
 }
@@ -139,6 +151,7 @@ const MessagingFactory = (SocketFactory, GiphyFactory) => {
 
 Inject('$resource')(GiphyFactory);
 Inject('socket', '$cookies')(UserFactory);
+Inject('socket', '$rootScope')(SocketFactory);
 Inject('SocketFactory', 'GiphyFactory')(MessagingFactory);
 
 export { UserFactory, SocketFactory, GiphyFactory, MessagingFactory };
