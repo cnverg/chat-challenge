@@ -65,7 +65,7 @@ const connection = function(socket) {
     /**
      * Allows client to leave the application
      * 
-     * @return {[Unit]}               effectful void
+     * @return {[Unit]}       effectful void
      */
     const removeUser = () => {
       if(socket.room) {
@@ -168,6 +168,8 @@ const connection = function(socket) {
 
         io.sockets.in(data.room).emit(Constants.message, message);
 
+        socket.broadcast.emit(`${data.room}Updated`, data.room);
+
         roomCache[data.room].push(message);
       }
     };
@@ -232,6 +234,20 @@ const connection = function(socket) {
       socket.leave(socket.room);
     }
 
+    const syncUserApply = (user) => {
+      if (!socket.user && !users.some(u => u.id === user.id)) {
+        users.push(user);
+        userUpdate();
+      }
+    }
+
+    const syncRoomApply = (room) => {
+      if (!socket.room && rooms.indexOf(room) == -1) {
+        rooms.push(room);
+        roomUpdate();
+      }
+    }
+
     // Adding listeners
     socket
       .on(Constants.chatroomCreate, chatroomCreate)
@@ -239,10 +255,19 @@ const connection = function(socket) {
       .on(Constants.refreshMessages, messageUpdate)
       .on(Constants.refreshUsers, userUpdate)
       .on(Constants.refreshRooms, roomUpdate)
+      .on(Constants.removeUser, removeUser)
       .on(Constants.disconnect, removeUser)
       .on(Constants.switchRoom, switchRoom)
       .on(Constants.addUser, addUser)
-      .on(Constants.send, send);
+      .on(Constants.send, send)
+
+      // Leverage in case server fails at some point
+      // To ensure keeping clients in-sync
+      .on(Constants.syncUserApply, syncUserApply)
+      .emit(Constants.syncUser)
+
+      .on(Constants.syncRoomApply, syncRoomApply)
+      .emit(Constants.syncRoom);
   })();
 }
 

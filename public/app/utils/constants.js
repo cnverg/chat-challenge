@@ -22,8 +22,14 @@ module.exports = ({
   bulkMessageUpdate: 'bulkMessageUpdate',
   serverMessage: 'serverMessage',
   switchRoom: 'switchRoom',
-  removeUser: 'addUser',
+  removeUser: 'removeUser',
   addUser: 'addUser',
+  
+  syncUserApply: 'syncUserApply',
+  syncUser: 'syncUser',
+  
+  syncRoomApply: 'syncRoomApply',
+  syncRoom: 'syncRoom',
 
   imageNotFound: 'imageNotFound'
 });

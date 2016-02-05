@@ -9,9 +9,9 @@ export default class ChatroomController {
     let mostRecentMessage = {};
     $scope.$parent.selectedTarget = $scope.target = $stateParams.target;
 
-    const scopedSocket = SocketFactory(); 
+    const socket = SocketFactory(); 
     const messenger = MessagingFactory($scope.user);
-    Object.assign(this, { $scope, scopedSocket, messenger });
+    Object.assign(this, { $scope, socket, messenger });
 
     const addMessage = (message) => {
       mostRecentMessage = {};
@@ -27,7 +27,7 @@ export default class ChatroomController {
       }
     }
 
-    scopedSocket      
+    socket      
       .on(Constants.serverMessage, (m) =>
         addMessage(m))
 
@@ -36,10 +36,20 @@ export default class ChatroomController {
 
       .on(Constants.bulkMessageUpdate, (ms) =>
         forEach(processMessage)(ms))
+
+      // In the event of the server being restarted re-sync users
+      .on(Constants.syncRoom, () => {
+        socket.emit(Constants.syncRoomApply, $scope.target)
+      })
       
       .emit(Constants.switchRoom, $scope.target);
 
     $scope.sendMessage = this.sendMessage.bind(this);
+
+    $scope.clearMessages = () => {
+      if ($scope.unread[$scope.target])
+        $scope.unread[$scope.target] = false
+    }
   }
 
   sendMessage() {

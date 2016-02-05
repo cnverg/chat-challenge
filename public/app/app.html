@@ -17,25 +17,33 @@
         <ul class='collection with-header'>
           <li class='row col s12 collection-header' style='margin-bottom: 0'>
             <h5 style='margin:0; line-height:64px' class='left col s10'>Rooms</h5>
-            <a class='right col s2' ui-sref="chat.roomCreate"><i class="material-icons icon">add</i></a>
+            <a title='add room' class='right col s2' ui-sref="chat.roomCreate"><i class="material-icons icon">add</i></a>
           </li>
 
           <li class='row col s12 collection-item' data-ng-class="{'active' : selectedTarget == room }" data-ng-repeat='room in rooms'>
-            <a class= 'left col s10' ui-sref='chat.room({ target: room })' data-ng-bind='room'></a>
-            <a class='right col s2' ui-sref="chat.roomDelete({ chatroom: room })"><i class="material-icons icon">remove</i></a>
+            <a class= 'left col s10' ui-sref='chat.room({ target: room })'>
+              <div class='col s10' data-ng-bind='::room'></div>
+
+              <div class='col s2'> <i title='Unread Messages' class='material-icons icon notification' ng-class="{ 'accent': unread[room] }" data-ng-show='true'>email</i> </div>
+            </a>
+            <a title='delete room' class='right col s2' ui-sref="chat.roomDelete({ chatroom: room })"><i class="material-icons icon">remove</i></a>
           </li>
 
           <li class='collection-header clear'>
             <h5 style='margin:0; line-height:64px'>Online Users</h5>
           </li>
 
-          <li class='collection-item avatar'  data-ng-class="{'active' : selectedTarget == user.id }" data-ng-repeat='user in users | filter : notCurrentUser'>
-            <img class='responsive-img circle' ng-src='{{ user.avatarUrl }}' /> 
+          <li class='collection-item avatar'  data-ng-class="{'active' : selectedTarget == user.roomId }" data-ng-repeat='user in users | filter : notCurrentUser'>
+            <div class='col s8'>
+              <img class='responsive-img circle' ng-src='{{ user.avatarUrl }}' /> 
 
-            <span class='title' data-ng-bind="user.name"></span>
-            <p class='truncate' data-ng-bind="user.emailAddress"></p>
+              <span class='title' data-ng-bind="user.name"></span>
+              <p class='truncate' data-ng-bind="user.emailAddress"></p>              
+            </div>
 
-            <a ui-sref='chat.room({ target: getRoomTarget(user) })' class="secondary-content"><i class="material-icons icon">send</i></a>
+            <div class='col s2'> <i title='Unread Messages' class='material-icons icon notification' ng-class="{ 'accent': unread[user.roomId] }" data-ng-show='true'>email</i> </div>
+
+            <a class='col s2' title='chat' ui-sref='chat.room({ target: user.roomId })' class="secondary-content"><i class="material-icons icon">send</i></a>
           </li>
         </ul>
       </div>

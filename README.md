@@ -14,7 +14,8 @@ The ideal candidate will possess strong CSS3 and Angular skills, and familiarity
 
 ### Features
 
-* Unlimited amount of rooms -(only refreshes current room, room message notification WIP)-
+* Notifications from chats
+* Unlimited amount of rooms
 * Unlimited users per room
 * Private messaging
 * Arguably acceptable design (tablet and up)

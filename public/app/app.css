@@ -13,6 +13,31 @@ span.imageArea a {
   margin-bottom: 5px;
 }
 
+.notification {
+  opacity: 0;
+
+  -transition: opacity 500ms linear;
+}
+
+.notification.accent {
+  color: #A62633;
+  
+  -webkit-animation: blink 2s infinite;
+          animation: blink 2s infinite;
+}
+
+@-webkit-keyframes blink {
+    0% { opacity: 0; }
+   50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes blink {
+    0% { opacity: 0; }
+   50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 .full-width {
   width: 100%;
 }

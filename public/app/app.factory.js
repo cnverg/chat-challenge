@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import { User } from './models/user';
 import Constants from './utils/constants';
 import { Inject } from './utils/decorators';
-import { compose, apply, first, id, lazy } from './utils/helpers';
+import { compose, apply, id, lazy } from './utils/helpers';
 
 const getGravatarUrlFor = (email) => `https://www.gravatar.com/avatar?gravatar_id=${md5(email)}&d=mm`;
 
@@ -18,8 +18,7 @@ function UserFactory(socket, $cookies) {
   const putUserForCookie = compose(bindToCookie($cookies.put), JSON.stringify);
   const get = getUserFromCookie = compose(JSON.parse, or(bindToCookie($cookies.get), () => '{}'));
 
-  const emitUserEnter = socket.emit.bind(socket, Constants.userEnter);
-  const emitUserLeave = socket.emit.bind(socket, Constants.userLeave);
+  const removeUser = socket.emit.bind(socket, Constants.removeUser);
 
   const login = (username, email) =>
     new Promise((resolve, reject) =>
@@ -30,7 +29,7 @@ function UserFactory(socket, $cookies) {
   const logout = () =>
     new Promise((resolve, reject) =>
       (get().isValid
-        ? compose(apply(resolve, removeUserFromCookie))
+        ? compose(apply(resolve, removeUser, removeUserFromCookie))
         : compose(reject, Error.bind(Error, "User is not logged in."))).call(get()));
 
   return {
