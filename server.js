@@ -97,7 +97,7 @@ const connection = function(socket) {
       socket.join(room);
       socket.emit(Constants.bulkMessageUpdate, roomCache[room]);
 
-      if (!isMd5(room)) {
+      if (isMd5(room)) {
         _emitEnterRoom(room, 'You are now in a private chat');
         _broadcastEnterRoom(room, `${socket.user.name} opened a private chat with you`);
       } else {
@@ -115,8 +115,8 @@ const connection = function(socket) {
      * @param  {[String]} content   body of the message
      * @return {[Unit]}             effectful void
      */
-    const _emitEnterRoom = (room, content) => {
-      socket.emit(Constants.serverMessage, _buildServerMessage(content));
+    const _emitEnterRoom = (room, content) => 
+{      socket.emit(Constants.serverMessage, _buildServerMessage(content));
     }
 
     /**
@@ -158,11 +158,9 @@ const connection = function(socket) {
      * @return {[Unit]}           effectful void
      */
     const send = (data) => {
-      if (data.status === 404) {
-        console.log(data.content);
-
+      if (data.status < 200 || data.status >= 300) {
         socket.emit(Constants.serverMessage, Object.assign({}, server, {
-          content: 'No images were found with this search',
+          content: data.statusText,
           timestamp: Date.now()
         }));
       } else {

@@ -1,64 +1,48 @@
-<div class='row full-height' style='margin-bottom: 0'>
-  <div class='col s12 hide-on-med-and-down full-height'>
-    <div class='col s3 side-nav fixed'>
-      <div class='row col s12 '>
-        <a ui-sref='chat'><h4>Chat App</h4></a>
-        
-        <div class='collection' style='border: none'>
-          <div class='collection-item avatar'>
-            <img class='left responsive-img circle' data-ng-src='{{ ::user.avatarUrl }}' />
-            <span class='clear title bold' data-ng-bind='user.name'></span>
-            <p data-ng-bind='user.emailAddress'></p>
+<div class='row col s12 full-height' style='margin-bottom: 0'>
+  <div class='col s3 side-nav fixed'>
+    <div class='row col s12 '>
+      <a ui-sref='chat'><h4>Chat App</h4></a>
+      
+      <div class='collection' style='border: none'>
+        <div class='collection-item avatar'>
+          <img class='left responsive-img circle' data-ng-src='{{ ::user.avatarUrl }}' />
+          <span class='clear title bold' data-ng-bind='user.name'></span>
+          <p data-ng-bind='user.emailAddress'></p>
 
-            <a ui-sref='auth.logout' title='log out' class="secondary-content right"><i class="material-icons icon">settings_power</i></a>
-          </div>
-        </div>
-
-        <div class="row">
-          <ul class='collection with-header'>
-            <li class='row col s12 collection-header' style='margin-bottom: 0'>
-              <h5 style='margin:0; line-height:64px' class='left col s10'>Rooms</h5>
-              <a class='right col s2' ui-sref="chat.roomCreate"><i class="material-icons icon">add</i></a>
-            </li>
-
-            <li class='row col s12 collection-item' data-ng-class="{'active' : selectedTarget == room }" data-ng-repeat='room in rooms'>
-              <a class= 'left col s10' ui-sref='chat.room({ target: room })' data-ng-bind='room'></a>
-              <a class='right col s2' ui-sref="chat.roomDelete({ chatroom: room })"><i class="material-icons icon">remove</i></a>
-            </li>
-
-            <li class='collection-header clear'>
-              <h5 style='margin:0; line-height:64px'>Online Users</h5>
-            </li>
-
-            <li class='collection-item avatar'  data-ng-class="{'active' : selectedTarget == user.id }" data-ng-repeat='user in users | filter : notCurrentUser'>
-              <img class='responsive-img circle' ng-src='{{ user.avatarUrl }}' /> 
-
-              <span class='title' data-ng-bind="user.name"></span>
-              <p class='truncate' data-ng-bind="user.emailAddress"></p>
-
-              <a ui-sref='chat.room({ target: getRoomTarget(user) })' class="secondary-content"><i class="material-icons icon">send</i></a>
-            </li>
-          </ul>
+          <a ui-sref='auth.logout' title='log out' class="secondary-content right"><i class="material-icons icon">settings_power</i></a>
         </div>
       </div>
-    </div>
 
-    <div class='col s9 offset-s3 full-height' ui-view></div>
+      <div class="row">
+        <ul class='collection with-header'>
+          <li class='row col s12 collection-header' style='margin-bottom: 0'>
+            <h5 style='margin:0; line-height:64px' class='left col s10'>Rooms</h5>
+            <a class='right col s2' ui-sref="chat.roomCreate"><i class="material-icons icon">add</i></a>
+          </li>
 
-    <div class='col s12 hide-on-large-only'>
-      <nav class='nav-wrapper'>
-        <a href='javascript:void(0)' data-activates='mobile' class='button-collapse'>
-          <i class='material-icons'>menu</i>
-        </a>
+          <li class='row col s12 collection-item' data-ng-class="{'active' : selectedTarget == room }" data-ng-repeat='room in rooms'>
+            <a class= 'left col s10' ui-sref='chat.room({ target: room })' data-ng-bind='room'></a>
+            <a class='right col s2' ui-sref="chat.roomDelete({ chatroom: room })"><i class="material-icons icon">remove</i></a>
+          </li>
 
-        <ul id='mobile' class='side-nav'>
-          <li>
-            <a href='javascript:void(0)'><i class='material-icons'>message</i></a>
-            <a href='javascript:void(0)'><i class='material-icons'>info</i></a>
-          </li>  
+          <li class='collection-header clear'>
+            <h5 style='margin:0; line-height:64px'>Online Users</h5>
+          </li>
+
+          <li class='collection-item avatar'  data-ng-class="{'active' : selectedTarget == user.id }" data-ng-repeat='user in users | filter : notCurrentUser'>
+            <img class='responsive-img circle' ng-src='{{ user.avatarUrl }}' /> 
+
+            <span class='title' data-ng-bind="user.name"></span>
+            <p class='truncate' data-ng-bind="user.emailAddress"></p>
+
+            <a ui-sref='chat.room({ target: getRoomTarget(user) })' class="secondary-content"><i class="material-icons icon">send</i></a>
+          </li>
         </ul>
-      </nav>
+      </div>
     </div>
+  </div>
+
+  <div class='col s9 offset-s3 full-height' ui-view></div>
   </div>
 </div>
 
