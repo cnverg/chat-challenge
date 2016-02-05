@@ -10,7 +10,7 @@ export default class ChatroomController {
     $scope.$parent.selectedTarget = $scope.target = $stateParams.target;
 
     const scopedSocket = SocketFactory();
-    const messenger = MessagingFactory($scope, $scope.user);
+    const messenger = MessagingFactory($scope.user);
     Object.assign(this, { $scope, scopedSocket, messenger });
 
     const addMessage = $scope.messages.push.bind($scope.messages);

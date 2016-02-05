@@ -1,6 +1,7 @@
+import md5 from 'md5';
 import { User } from './models/user';
-import { Inject } from './utils/decorators';
 import Constants from './utils/constants'
+import { Inject } from './utils/decorators';
 
 @Inject('$scope', 'SocketFactory', 'UserFactory')
 export default class AppController {
@@ -26,5 +27,6 @@ export default class AppController {
       .emit(Constants.refreshRooms);
 
     $scope.notCurrentUser = (user) => user.id !== $scope.user.id;
+    $scope.getRoomTarget = (user) => md5([user.id].concat([$scope.user.id]).sort().join(''));
   }
 };

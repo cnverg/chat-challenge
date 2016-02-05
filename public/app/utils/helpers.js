@@ -45,5 +45,8 @@ function lazy(f) {
   }
 }
 
-module.exports = { compose: compose, apply: apply, first: first, forEach: forEach, lazy: lazy };
+function isMd5(str) {
+  return str && /^[a-f0-9]{32}$/.test(str);
+}
 
+module.exports = { compose: compose, apply: apply, first: first, forEach: forEach, lazy: lazy, isMd5: isMd5 };

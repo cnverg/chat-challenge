@@ -8,7 +8,10 @@ var server  = require('http').createServer(app);
 var io      = require('socket.io')(server);
 
 var Constants = require('./public/app/utils/constants');
-var compose = require('./public/app/utils/helpers').compose;
+var helpers   = require('./public/app/utils/helpers');
+
+var compose = helpers.compose;
+var isMd5 = helpers.isMd5;
 var users = [];
 
 const chatroomsDat = './resources/chatrooms.dat';
@@ -25,6 +28,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 
 /**
  * Handles a new client connection and setup
+ * 
  * @param  {[Socket]} socket  socket in which the action will take effect
  * @return {[Unit]}           effectful void
  */
@@ -36,16 +40,54 @@ const connection = function(socket) {
     let _user = {};
     let _sessionRoom = '';
 
+    /**
+     * Allows client to join in the application
+     * 
+     * @param  {[Object]} user        user that joined
+     * @param  {[String]} defaultRoom default room (if entered directly to a room)
+     * @return {[Unit]}               effectful void
+     */
     const addUser = (user, defaultRoom) => {
+      if(defaultRoom) {
+        socket.room = defaultRoom;
+        socket.join(socket.room);
+      } else {
+        socket.room = '';
+      }
+
       socket.user = user;
 
-      socket.room = defaultRoom || rooms[0];
+      users.push(socket.user);
 
-      users.push(user);
-
-      socket.join(socket.room);
+      userUpdate();
     }
 
+    /**
+     * Allows client to leave the application
+     * 
+     * @return {[Unit]}               effectful void
+     */
+    const removeUser = () => {
+      if(socket.room) {
+        _emitLeaveRoom(socket.room);
+        socket.leave(socket.room);
+        socket.room = '';
+      }
+
+      users.splice(users.indexOf(socket.user), 1);
+
+      socket.user = {};
+      
+      userUpdate();
+    }
+
+    /**
+     * Allows client to switch room
+     * Client can be in one room at a time
+     * 
+     * @param  {[String]} room  desired room to join
+     * @return {[Unit]}         effectful void
+     */
     const switchRoom = (room) => {
       roomCache[room] = roomCache[room] || [];
 
@@ -54,21 +96,55 @@ const connection = function(socket) {
 
       socket.join(room);
       socket.emit(Constants.bulkMessageUpdate, roomCache[room]);
-      _emitEnterRoom(room);
+
+      if (!isMd5(room)) {
+        _emitEnterRoom(room, 'You are now in a private chat');
+        _broadcastEnterRoom(room, `${socket.user.name} opened a private chat with you`);
+      } else {
+        _emitEnterRoom(room, `You have joined ${room}`);
+        _broadcastEnterRoom(room, `${socket.user.name} has joined the room`);
+      }
 
       socket.room = room;
     }
 
-    const _emitEnterRoom = (room) => {
-      socket.emit(Constants.serverMessage, Object.assign({}, server, {
-        content: `You have joined ${room}`, timestamp: Date.now()
-      }));
-
-      socket.broadcast.to(room).emit(Constants.serverMessage, Object.assign({}, server, {
-        content: `${socket.user.name} has joined the room`, timestamp: Date.now()
-      }));
+    /**
+     * Emits a message to current client
+     * 
+     * @param  {[String]} room      desired room to notify
+     * @param  {[String]} content   body of the message
+     * @return {[Unit]}             effectful void
+     */
+    const _emitEnterRoom = (room, content) => {
+      socket.emit(Constants.serverMessage, _buildServerMessage(content));
     }
 
+    /**
+     * Emits a message to every client but this one
+     * 
+     * @param  {[String]} room      desired room to notify
+     * @param  {[String]} content   body of the message
+     * @return {[Unit]}             effectful void
+     */
+    const _broadcastEnterRoom = (room, content) => {
+      socket.broadcast.to(room).emit(Constants.serverMessage, _buildServerMessage(content));
+    }
+
+    /**
+     * Constructs message from server
+     * 
+     * @param  {[String]} content   body of the message
+     * @return {[Unit]}             effectful void
+     */
+    const _buildServerMessage = (content) => Object.assign({}, server, { content, timestamp: Date.now() });
+
+    /**
+     * Emits to all involved users in a room
+     * that a client has left the session
+     * 
+     * @param  {[String]} room  desired room to notify
+     * @return {[Unit]}         effectful void
+     */
     const _emitLeaveRoom = (room) => {
       socket.broadcast.to(socket.room).emit(Constants.serverMessage, Object.assign({}, server, {
         content: `${socket.user.name} has left the room`, timestamp: Date.now()
@@ -76,63 +152,27 @@ const connection = function(socket) {
     }
 
     /**
-     * Allows the client to join a specified room
-     * @param  {[String]} roomId  id of the room
-     * @return {[Unit]}           effectful void
-     */
-    const join = (roomId, user) => {
-      _user = user;
-      socket.join(roomId);
-
-      _sessionRoom = roomId;
-      roomCache[roomId] = roomCache[roomId] || [];
-      socket.broadcast.to(roomId).emit(Constants.greet, Object.assign({}, server, { content: `${user.name} entered ${roomId}`, timestamp: Date.now() }));
-    };
-
-    /**
-     * Allows the client to leave a specified room
-     * @param  {[String]} roomId  id of the room
-     * @return {[Unit]}           effectful void
-     */
-    const leave = (roomId, user) => {
-      _sessionRoom = '';
-      socket.leave(roomId);
-    };
-
-    /**
      * Allows client to send message to any room they belong to
-     * @param  {[Socket]} socket  socket in which the action will take effect
+     * 
      * @param  {[Object]}   data  message information
-     * @return {[Unit]}     effectful void
+     * @return {[Unit]}           effectful void
      */
     const send = (data) => {
-      const message = Object.assign({}, data, { timestamp: Date.now(), room: undefined });
+      if (data.status === 404) {
+        console.log(data.content);
 
-      io.sockets.in(data.room).emit(Constants.message, message);
-      roomCache[data.room].push(message);
+        socket.emit(Constants.serverMessage, Object.assign({}, server, {
+          content: 'No images were found with this search',
+          timestamp: Date.now()
+        }));
+      } else {
+        const message = Object.assign({}, data, { timestamp: Date.now(), room: undefined });
+
+        io.sockets.in(data.room).emit(Constants.message, message);
+
+        roomCache[data.room].push(message);
+      }
     };
-
-    /**
-     * Allows client to know when a User logged in
-     * @param   {[Object]}  user  user
-     * @return  {[Unit]}          effectful void
-     */
-    const userEnter = (user) => {
-      users.push(user);
-      userUpdate();
-    }
-
-    /**
-     * Allows client to know when a User logged out
-     * @param   {[Object]}  user  user
-     * @return  {[Unit]}          effectful void
-     */
-    const userLeave = (user) => {
-      users = users.filter(u => u.id != user.id);
-      userUpdate();
-
-      _user = {};
-    }
 
     /**
      * Updates user list in all sockets
@@ -196,20 +236,15 @@ const connection = function(socket) {
 
     // Adding listeners
     socket
-      .on(Constants.send, send)
-      .on(Constants.join, join)
-      .on(Constants.leave, leave)
-      .on(Constants.userEnter, userEnter)
-      .on(Constants.userLeave, userLeave)
-      .on(Constants.disconnect, disconnect)
       .on(Constants.chatroomCreate, chatroomCreate)
       .on(Constants.chatroomDelete, chatroomDelete)
+      .on(Constants.refreshMessages, messageUpdate)
       .on(Constants.refreshUsers, userUpdate)
       .on(Constants.refreshRooms, roomUpdate)
-      .on(Constants.refreshMessages, messageUpdate)
-
+      .on(Constants.disconnect, removeUser)
       .on(Constants.switchRoom, switchRoom)
-      .on(Constants.addUser, addUser);
+      .on(Constants.addUser, addUser)
+      .on(Constants.send, send);
   })();
 }
 

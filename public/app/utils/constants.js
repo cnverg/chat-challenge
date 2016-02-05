@@ -11,20 +11,19 @@ module.exports = ({
   appContainer: 'app-container',
   userEnter: 'userEnter',
   userLeave: 'userLeave',
-  chatroomCreate: 'chatroomCreate',
-  chatroomDelete: 'chatroomDelete',
-  components: 'components',
-  greet: 'greet',
-  grieve: 'grieve',
-  system: 'system',
   disconnect: 'disconnect',
   preBootstrapLoader: 'preBootstrapLoader',
+
+  chatroomCreate: 'chatroomCreate',
+  chatroomDelete: 'chatroomDelete',
   refreshUsers: 'refreshUsers',
   refreshRooms: 'refreshRooms',
   refreshMessages: 'refreshMessages',
   bulkMessageUpdate: 'bulkMessageUpdate',
-
   serverMessage: 'serverMessage',
   switchRoom: 'switchRoom',
-  addUser: 'addUser'
+  removeUser: 'addUser',
+  addUser: 'addUser',
+
+  imageNotFound: 'imageNotFound'
 });
