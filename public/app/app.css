@@ -75,6 +75,11 @@ span.imageArea a {
   padding-left: 5px;
 }
 
+.system-message {
+  font-style: italic;
+  color: #999999;
+}
+
 .bold {
   font-weight: bold;
 }

@@ -3,7 +3,7 @@ import { Inject } from '../../utils/decorators';
 import { compose, lazy, forEach } from '../../utils/helpers';
 
 @Inject('$scope', '$stateParams', 'SocketFactory', 'MessagingFactory')
-export default class ClassroomController {
+export default class ChatroomController {
   constructor($scope, $stateParams, SocketFactory, MessagingFactory) {
     $scope.messages = [];
     let mostRecentMessage = {};
@@ -24,21 +24,17 @@ export default class ClassroomController {
       }
     }
 
-    scopedSocket
-      .on(Constants.greet, (m) => {
-        addMessage(m);
-      })
-      .on(Constants.grieve, (m) => {
-        addMessage(m);
-      })
-      .on(Constants.message, (m) => {
-        processMessage(m);
-      })
-      .on(Constants.bulkMessageUpdate, (ms) => {
-        forEach(processMessage)(ms);
-      })
-      .emit(Constants.join, $scope.target, $scope.user)
-      .emit(Constants.refreshMessages, $scope.target);
+    scopedSocket      
+      .on(Constants.serverMessage, (m) =>
+        addMessage(m))
+
+      .on(Constants.message, (m) =>
+        processMessage(m))
+
+      .on(Constants.bulkMessageUpdate, (ms) =>
+        forEach(processMessage)(ms))
+      
+      .emit(Constants.switchRoom, $scope.target);
 
     $scope.sendMessage = this.sendMessage.bind(this);
   }

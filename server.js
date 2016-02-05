@@ -35,6 +35,46 @@ const connection = function(socket) {
   return (function() {
     let _user = {};
     let _sessionRoom = '';
+
+    const addUser = (user, defaultRoom) => {
+      socket.user = user;
+
+      socket.room = defaultRoom || rooms[0];
+
+      users.push(user);
+
+      socket.join(socket.room);
+    }
+
+    const switchRoom = (room) => {
+      roomCache[room] = roomCache[room] || [];
+
+      socket.leave(socket.room);
+      _emitLeaveRoom(socket.room);
+
+      socket.join(room);
+      socket.emit(Constants.bulkMessageUpdate, roomCache[room]);
+      _emitEnterRoom(room);
+
+      socket.room = room;
+    }
+
+    const _emitEnterRoom = (room) => {
+      socket.emit(Constants.serverMessage, Object.assign({}, server, {
+        content: `You have joined ${room}`, timestamp: Date.now()
+      }));
+
+      socket.broadcast.to(room).emit(Constants.serverMessage, Object.assign({}, server, {
+        content: `${socket.user.name} has joined the room`, timestamp: Date.now()
+      }));
+    }
+
+    const _emitLeaveRoom = (room) => {
+      socket.broadcast.to(socket.room).emit(Constants.serverMessage, Object.assign({}, server, {
+        content: `${socket.user.name} has left the room`, timestamp: Date.now()
+      }));
+    }
+
     /**
      * Allows the client to join a specified room
      * @param  {[String]} roomId  id of the room
@@ -46,7 +86,7 @@ const connection = function(socket) {
 
       _sessionRoom = roomId;
       roomCache[roomId] = roomCache[roomId] || [];
-      socket.broadcast.to(roomId).emit(Constants.grieve, Object.assign({}, server, { content: `${user.name} connected`, timestamp: Date.now() }));
+      socket.broadcast.to(roomId).emit(Constants.greet, Object.assign({}, server, { content: `${user.name} entered ${roomId}`, timestamp: Date.now() }));
     };
 
     /**
@@ -148,12 +188,10 @@ const connection = function(socket) {
      * @return  {[Unit]}  effectful void
      */
     const disconnect = () => {
-      socket.broadcast.to(_sessionRoom).emit(Constants.grieve, Object.assign({}, server, {
-        content: `${_user.name} disconnected`, timestamp: Date.now()
-      }));
+      users = users.filter(u => u.id != socket.user.id);
 
-      userLeave(_user);
-      leave(_sessionRoom, _user);
+      _emitLeaveRoom(socket.room);
+      socket.leave(socket.room);
     }
 
     // Adding listeners
@@ -166,9 +204,12 @@ const connection = function(socket) {
       .on(Constants.disconnect, disconnect)
       .on(Constants.chatroomCreate, chatroomCreate)
       .on(Constants.chatroomDelete, chatroomDelete)
-      .on(Constants.refreshUsers, userEnter)
+      .on(Constants.refreshUsers, userUpdate)
       .on(Constants.refreshRooms, roomUpdate)
-      .on(Constants.refreshMessages, messageUpdate);
+      .on(Constants.refreshMessages, messageUpdate)
+
+      .on(Constants.switchRoom, switchRoom)
+      .on(Constants.addUser, addUser);
   })();
 }
 

@@ -24,13 +24,13 @@ function UserFactory(socket, $cookies) {
   const login = (username, email) =>
     new Promise((resolve, reject) =>
       (!get().isValid
-        ? compose(apply(emitUserEnter, resolve, putUserForCookie), buildUserFrom.bind(undefined, username, email))
+        ? compose(apply(resolve, putUserForCookie), buildUserFrom.bind(undefined, username, email))
         : compose(reject, Error.bind(Error, "User is already logged in."))).call());
 
   const logout = () =>
     new Promise((resolve, reject) =>
       (get().isValid
-        ? compose(apply(emitUserLeave, resolve, removeUserFromCookie))
+        ? compose(apply(resolve, removeUserFromCookie))
         : compose(reject, Error.bind(Error, "User is not logged in."))).call(get()));
 
   return {

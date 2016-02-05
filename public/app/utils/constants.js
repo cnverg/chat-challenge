@@ -22,5 +22,9 @@ module.exports = ({
   refreshUsers: 'refreshUsers',
   refreshRooms: 'refreshRooms',
   refreshMessages: 'refreshMessages',
-  bulkMessageUpdate: 'bulkMessageUpdate'
+  bulkMessageUpdate: 'bulkMessageUpdate',
+
+  serverMessage: 'serverMessage',
+  switchRoom: 'switchRoom',
+  addUser: 'addUser'
 });
