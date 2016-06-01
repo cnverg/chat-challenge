@@ -1,10 +1,16 @@
-﻿
+﻿app.constant('Globals', {
+    socketURL: 'http://localhost:3000',
+    giphyURL: 'http://api.giphy.com/v1/gifs/search?q=',
+    giphyAPIKey: '&api_key=dc6zaTOxFJmzC&limit=1'
+});
+
+
 //
 //Socket Factory to provide sockets methods
 //
 
-app.factory('SocketFactory', function ($rootScope) {
-    var socket = io.connect('http://localhost:3000');
+app.factory('SocketFactory', function ($rootScope, Globals) {
+    var socket = io.connect(Globals.socketURL);
       return {
 
           on: function (eventName, callback) {
@@ -60,7 +66,7 @@ app.factory('LoginFactory', function ($rootScope, $cookies) {
     };
 })
 
-app.factory('GiphyFactory', function($http) {
+app.factory('GiphyFactory', function($http, Globals) {
     return{
         
         isGiphyRequest: function(msg) {
@@ -72,7 +78,7 @@ app.factory('GiphyFactory', function($http) {
         },
         GetGiphyGif: function(searchTerm, $scope, moment, room) {
             var q = searchTerm.trim().replace("'", '').split(' ');
-            var url = 'http://api.giphy.com/v1/gifs/search?q=' + q + '&api_key=dc6zaTOxFJmzC&limit=1';
+            var url = Globals.giphyURL + q + Globals.giphyAPIKey;
             $http.get(url)
                 .then(function (data) {
                     if (data.data.data) {
