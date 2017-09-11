@@ -75,7 +75,6 @@ app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory,
     //
 
     $scope.send = function (room, data) {
-        console.log(data);
         SocketFactory.emit('send', {
             room: room,
             message: data.message,
@@ -100,7 +99,8 @@ app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory,
     //
 
     SocketFactory.on('message', function (data) {
-        if($scope.currentUser) $scope.addMessage(data, moment);
+        if($scope.currentUser) 
+            $scope.addMessage(data, moment);
     });
 
     //Update the list of connected users
