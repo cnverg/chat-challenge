@@ -8,7 +8,7 @@ var app = angular.module('chatChallenge');
 //
 //Main Controller
 //
-app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory, LoginFactory, GiphyFactory) {
+app.controller('chatChallengeCtrl', function ($rootScope, $scope, socketFactory, loginFactory, giphyFactory) {
 
     //
     //Vars
@@ -20,7 +20,7 @@ app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory,
     $scope.currentMessage = "";
     $scope.data.messages = [];
     $scope.data.rooms = ["DevTeam"];
-    $scope.showModal = !LoginFactory.exist('userName');
+    $scope.showModal = !loginFactory.exist('userName');
     $scope.currentRoom = $scope.data.rooms.length > 0 ? $scope.data.rooms[0] : "";
     $scope.notAvailableUsers = [];
 
@@ -58,9 +58,9 @@ app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory,
 
     $scope.sendMessage = function (room, message) {
         if (message) {
-            if (GiphyFactory.isGiphyRequest(message)) {
-                var searchTerm = GiphyFactory.GetSearchTerm(message);
-                GiphyFactory.GetGiphyGif(searchTerm, $scope, moment, room);
+            if (giphyFactory.isGiphyRequest(message)) {
+                var searchTerm = giphyFactory.getSearchTerm(message);
+                giphyFactory.getGiphyGif(searchTerm, $scope, moment, room);
             } else {
                 var type = 'message';
                 $scope.formatMessage(message, moment, type);
@@ -75,7 +75,7 @@ app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory,
     //
 
     $scope.send = function (room, data) {
-        SocketFactory.emit('send', {
+        socketFactory.emit('send', {
             room: room,
             message: data.message,
             type: data.type
@@ -98,14 +98,14 @@ app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory,
     //Handle when a messages arrives
     //
 
-    SocketFactory.on('message', function (data) {
+    socketFactory.on('message', function (data) {
         if($scope.currentUser) 
             $scope.addMessage(data, moment);
     });
 
     //Update the list of connected users
 
-    SocketFactory.on('updateUsers', function (data) {
+    socketFactory.on('updateUsers', function (data) {
         if ($scope.currentUser) {
             $scope.data.users = data;
         } else {
@@ -117,7 +117,7 @@ app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory,
     //Update the list of available rooms
     //
 
-    SocketFactory.on('updateRooms', function (data) {
+    socketFactory.on('updateRooms', function (data) {
         $scope.data.rooms = data;
     });
 
@@ -126,7 +126,7 @@ app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory,
     //
 
     $scope.$on('$destroy', function (event) {
-        SocketFactory.removeListeners();
+        socketFactory.removeListeners();
     });
 
     //
@@ -134,17 +134,17 @@ app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory,
     //
 
     $scope.logOut = function () {
-        LoginFactory.logOut();
+        loginFactory.logOut();
         $scope.toogleModal();
         $scope.cleanUp();
-        SocketFactory.emit('leave');
+        socketFactory.emit('leave');
     };
 
     //
     //Checks if there is an user logged before starting chat
     //
 
-    if ($scope.currentUser || LoginFactory.getCurrent()) {
+    if ($scope.currentUser || loginFactory.getCurrent()) {
         startChat($scope.currentUser);
     } 
 
@@ -153,14 +153,14 @@ app.controller('chatChallengeCtrl', function ($rootScope, $scope, SocketFactory,
     //
 
     function startChat(userName) {
-        if (LoginFactory.exist('userName')) {
-            $scope.currentUser = LoginFactory.getCurrent();
+        if (loginFactory.exist('userName')) {
+            $scope.currentUser = loginFactory.getCurrent();
         } else {
             $scope.currentUser = userName;
-            LoginFactory.logIn(userName);
+            loginFactory.logIn(userName);
             $scope.toogleModal();
         }
-        SocketFactory.emit('join', {
+        socketFactory.emit('join', {
             roomName: $scope.currentRoom, userName: $scope.currentUser
         });
     }
