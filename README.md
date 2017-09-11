@@ -18,11 +18,16 @@ The chat should support a _room_ with unlimited number of participants and allow
 
 ### Giphy Integration
 
-Add some fun by integrating [Giphy](http://giphy.com) such that a message like `/giphy I'm so excited` searches the API and becomes the first image returned from the result set.
+Write /giphy 'some phrase' to get some awesome gifs.
+
+### Installation
+
+Run npm install to install jasmine, karma-jasmine and some other packages.
+
+### Tests
+
+Run karma start my.config.js to run the tests.
 
 
-## Setup and Delivery
 
-This repository provides a working, _arguably acceptable_ express application structure. Feel free to use it and change it as desired.
 
-When ready, drop us a line at jobs@cnverg.com with either a link to a repository of your own or a pull request, and tell us something nice about yourself :)
