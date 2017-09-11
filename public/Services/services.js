@@ -9,7 +9,7 @@
 //Socket Factory to provide sockets methods
 //
 
-app.factory('SocketFactory', function ($rootScope, Globals) {
+app.factory('socketFactory', function ($rootScope, Globals) {
     var socket = io.connect(Globals.socketURL);
       return {
 
@@ -44,7 +44,7 @@ app.factory('SocketFactory', function ($rootScope, Globals) {
 //Login Factory to provide Login functionality
 //
 
-app.factory('LoginFactory', function ($rootScope, $cookies) {
+app.factory('loginFactory', function ($rootScope, $cookies) {
     return {
 
         logIn: function (userName, callback) {
@@ -66,17 +66,17 @@ app.factory('LoginFactory', function ($rootScope, $cookies) {
     };
 })
 
-app.factory('GiphyFactory', function($http, Globals) {
+app.factory('giphyFactory', function($http, Globals) {
     return{
         
         isGiphyRequest: function(msg) {
             return msg.indexOf('/giphy') != -1;
         },
-        GetSearchTerm: function (msg) {
+        getSearchTerm: function (msg) {
             console.log(msg.split('/giphy')[1]);
             return msg.split('/giphy')[1];
         },
-        GetGiphyGif: function(searchTerm, $scope, moment, room) {
+        getGiphyGif: function(searchTerm, $scope, moment, room) {
             var q = searchTerm.trim().replace("'", '').split(' ');
             var url = Globals.giphyURL + q + Globals.giphyAPIKey;
             $http.get(url)
